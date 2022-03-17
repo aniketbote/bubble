@@ -2,6 +2,8 @@
 new_user_credentials.csv
 Ist page.pdf
 temp.ipynb
+.vscode
+production_venv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
