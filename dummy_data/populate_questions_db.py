@@ -1,58 +1,36 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
+import time
+from decimal import Decimal
 
 import pandas as pd
 from tqdm import tqdm
 import tensorflow_hub as hub
-import time
-from decimal import Decimal
 import boto3
-
-
-# In[2]:
-
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('questions-db')
 
-
-# In[3]:
-
-
-module_url = "https://tfhub.dev/google/universal-sentence-encoder/4"
-model = hub.load(module_url)
-print ("module %s loaded" % module_url)
-
-
-# In[4]:
-
+MODULE_URL = "https://tfhub.dev/google/universal-sentence-encoder/4"
+model = hub.load(MODULE_URL)
+print (f"module {MODULE_URL} loaded")
 
 def embed(inp):
+    '''
+    A function to create sentence embeddings using universal sentence encoder model.
+    '''
     return model(inp)
 
-
-# In[5]:
-
-
-def put_data(data, table):
-    response = table.put_item(Item=data)
+def put_data(data, d_table):
+    '''
+    A function to insert data into dynamodb table
+    '''
+    response = d_table.put_item(Item=data)
     return response
 
+df = pd.read_csv(r'dummy_data\data\questionIDs.csv')
+TAGLIST = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
+    'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
-# In[6]:
-
-
-df = pd.read_csv('dummy_data\data\questionIDs.csv')
-TAGLIST = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-
-
-# In[7]:
-
-
-for i in tqdm(range(len(df))): 
+for i in tqdm(range(len(df))):
     sample = {
         "question_id": df['question_id'][i],
         "question": df['question'][i],
@@ -60,7 +38,8 @@ for i in tqdm(range(len(df))):
         "upvotes": Decimal(str(df['upvotes'][i])),
         "downvotes":Decimal(str(df['downvotes'][i])),
         "timestamp":df['timestamp'][i],
-        "math_vector": list(map(lambda x: Decimal(str(x)), list(embed([df['question'][i]])[0].numpy()))),
+        "math_vector": list(map(lambda x: Decimal(str(x)), list(embed([df['question'][i]])[0] \
+            .numpy()))),
         "answer_id":[],
         "question_user_id":'user1',
         "image_urls": [],
