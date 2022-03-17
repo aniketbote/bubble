@@ -5,7 +5,7 @@
 
 
 import pandas as pd
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 import tensorflow_hub as hub
 import time
 from decimal import Decimal
@@ -45,7 +45,7 @@ def put_data(data, table):
 # In[6]:
 
 
-df = pd.read_csv('questionIDs.csv')
+df = pd.read_csv('dummy_data\data\questionIDs.csv')
 TAGLIST = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
 
