@@ -6,7 +6,11 @@ from tqdm import tqdm
 import tensorflow_hub as hub
 import boto3
 
-dynamodb = boto3.resource('dynamodb')
+dynamodb = boto3.resource(service_name='dynamodb',
+                          aws_access_key_id="",
+                          aws_secret_access_key="",
+                          region_name="us-east-1",
+                          endpoint_url="http://dynamodb.us-east-1.amazonaws.com")
 table = dynamodb.Table('questions-db')
 
 MODULE_URL = "https://tfhub.dev/google/universal-sentence-encoder/4"
@@ -26,7 +30,7 @@ def put_data(data, d_table):
     response = d_table.put_item(Item=data)
     return response
 
-df = pd.read_csv(r'dummy_data\data\questionIDs.csv')
+df = pd.read_csv(r'/content/drive/MyDrive/AFile/questionIDs.csv')
 TAGLIST = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', \
     'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
@@ -40,10 +44,9 @@ for i in tqdm(range(len(df))):
         "timestamp":df['timestamp'][i],
         "math_vector": list(map(lambda x: Decimal(str(x)), list(embed([df['question'][i]])[0] \
             .numpy()))),
-        "answer_id":[],
+        "answer_id":df['answer_id'][i],
         "question_user_id":'user1',
-        "image_urls": [],
-        "comments_id": []
+        "commentID": df['commentID'][i]
     }
 #     put_data(sample, table)
     time.sleep(5)
