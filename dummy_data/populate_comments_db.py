@@ -14,8 +14,8 @@ timestamp_list = comments_df['timestamp'].tolist()
 client = boto3.resource(
     service_name='dynamodb',
     region_name='us-east-1',
-    aws_access_key_id="AKIA2DHJUBNXZOBNU6EF",
-    aws_secret_access_key="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"
+    aws_access_key_id="*",
+    aws_secret_access_key="*"
 )
 
 comments_table = client.Table('comments-db')
