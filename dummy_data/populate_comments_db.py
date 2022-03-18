@@ -2,15 +2,14 @@ import boto3
 import pandas as pd
 
 comments_df = pd.read_csv("commentsIDs.csv")
-comments_df.head(5)
 columns = comments_df.columns
-print(columns)
+#print(columns)
 
 commentIDs_list = comments_df['commentID'].tolist()
 comment_list = comments_df['comment'].tolist()
 timestamp_list = comments_df['timestamp'].tolist()
 
-print(len(commentIDs_list), len(comment_list), len(timestamp_list))
+#print(len(commentIDs_list), len(comment_list), len(timestamp_list))
 
 client = boto3.resource(
     service_name='dynamodb',
