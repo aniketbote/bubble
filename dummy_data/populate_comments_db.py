@@ -28,3 +28,4 @@ with comments_table.batch_writer() as batch:
         new_record['comment'] = comment_list[i]
         new_record['timestamp'] = timestamp_list[i]
         batch.put_item(Item=new_record)
+        
