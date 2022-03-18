@@ -1,7 +1,4 @@
 import boto3
-import requests
-import datetime
-from decimal import Decimal
 import pandas as pd
 
 comments_df = pd.read_csv("commentsIDs.csv")
