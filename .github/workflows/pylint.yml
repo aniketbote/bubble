@@ -30,4 +30,4 @@ jobs:
         pip install pylint==2.12.2
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py') -d C0114,E1136
+        pylint $(git ls-files '*.py') -d C0114,E1136,E1101
