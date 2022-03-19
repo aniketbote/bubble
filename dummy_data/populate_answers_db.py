@@ -28,7 +28,8 @@ for i in tqdm(range(len(df))):
         "upvotes": Decimal(str(df['upvotes'][i])),
         "downvotes":Decimal(str(df['downvotes'][i])),
         "timestamp":df['timestamp'][i],
-        "commentID": df['commentID'][i]
+        "comments_id": df['commentID'][i],
+        "image_urls": [],
     }
     put_data(sample1, table_item)
     time.sleep(5)
