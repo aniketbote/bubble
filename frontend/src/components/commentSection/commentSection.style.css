@@ -1,0 +1,13 @@
+.comment-outer{
+    width: 100%;
+}
+
+.comment-div p{
+    color: gray;
+    font-size: small;
+}
+
+.horizontal-line-1{
+    border-bottom:1px solid rgb(214, 208, 208);
+    margin-bottom:10px ;
+}

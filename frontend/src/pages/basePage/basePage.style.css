@@ -1,0 +1,23 @@
+.baseDiv{
+   display: flex;
+   flex-direction: row;
+   height: 100vh;
+}
+
+.buttonBar{
+    width: 320px; 
+    padding-top: 110px; 
+    box-shadow: rgba(0, 0, 0, 0.54) 0px 3px 8px;
+}
+
+.contentBar{
+   padding-top: 60px ;
+   width: 100% ;
+   overflow: auto;
+}
+
+@media only screen and (max-width: 993px) {
+    .buttonBar {
+        display: none;
+    }
+}

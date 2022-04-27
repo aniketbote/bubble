@@ -1,0 +1,35 @@
+#container {
+    display: flex;           
+    flex-direction: column;  
+    justify-content: center; 
+    align-items: center;     
+    height: 95vh;
+    
+}
+
+.box {
+    width: 350px;
+    margin: 5px;
+    background-color: rgb(226, 235, 243);
+    border: 1px solid black;    
+    border-radius: 10px;
+    padding: 10px 30px 20px 30px
+}
+
+.bottom-link{
+    text-decoration: none;
+}
+
+.message{
+    width: 350px;
+    background-color: rgba(0, 255, 55, 0.158);
+    border-radius: 8px;
+    padding: 4px 8px;
+    color: gray;
+    margin-bottom: 5px;
+    font-size: 13px;
+    border: 1px solid rgba(58, 59, 58, 0.397);
+}
+.display-linebreak {
+    white-space: pre-line;
+  }

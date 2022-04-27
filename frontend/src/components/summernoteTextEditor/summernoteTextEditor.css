@@ -1,0 +1,87 @@
+.fullscreen{
+    z-index: 1500 !important;
+}
+.link-dialog{
+    padding-top: 50px;
+    z-index: 1600 !important;
+    background: none !important;;
+}
+.outer-div{
+    padding: 1px 10px ;
+}
+.insert-upload-image{
+    position: fixed;
+    top:120px;
+    left:30vw;
+    width:40vw;
+    min-height:340px;
+    z-index: 2000;
+    padding: 10px;
+}
+.insert-upload-image-background{
+    position: fixed;
+    top:0px;
+    width:100vw;
+    height:100vh;
+    z-index: 1800;
+}
+.flex-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.row-one{
+    display: flex;
+    flex-direction: row;
+}
+.row-two{
+    margin-top: 20px;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    padding-left: 5px;
+    padding-right: 8px;
+}
+.row-three{
+    margin-top: 10px;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    padding-left: 40px;
+
+}
+.row-four{
+    margin-top: 10px;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    padding-left: 5px;
+    padding-right: 8px;
+
+}
+.row-five{
+    margin-top: 30px;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    padding-right: 10px;
+    justify-content: right;
+}
+
+.text-image{
+    margin:10px;
+    color:grey;
+    margin-top:12px;
+    font-size: 13px;
+    color: grey;
+    min-width: 105px;
+}
+
+@media only screen and (max-width: 900px) {
+    .insert-upload-image{
+        left:25vw;
+        width:50vw;
+        height:50vh;
+        padding: 15px;
+    }
+}

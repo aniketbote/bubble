@@ -1,0 +1,14 @@
+.menu-text{
+    font-size: 12px;
+    padding-top: 12px;
+}
+
+.app-bar{
+    background-color: rgb(44, 44, 44) !important;
+}
+
+@media only screen and (max-width: 993px) {
+    .hiddenButtons {
+        display: none !important;
+    }
+}

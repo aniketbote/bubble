@@ -1,0 +1,21 @@
+.outer-box{
+    position: fixed ;
+    top: 0px ;
+    padding-top: 12px;
+    padding-left: 100px;
+    width: 80% ;
+    height: 60px ;
+    z-index: 1200 !important;
+}
+.paper-box{
+    box-shadow: rgba(0, 0, 0, 0.55) 0px 0px 6px !important;
+    height: 40px;
+}
+@media only screen and (max-width: 993px) {
+    .outer-box {  
+        display: flex;
+        justify-content: center;
+        padding-top: 8px;
+        max-width: 80%;
+    }
+}

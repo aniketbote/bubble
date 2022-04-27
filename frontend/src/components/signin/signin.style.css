@@ -1,0 +1,23 @@
+.error{
+    background-color: rgba(255, 0, 0, 0.199);
+    border-radius: 4px;
+    padding: 1px 6px ;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.display-linebreak {
+    white-space: pre-line;
+  }
+  
+.input-groups{
+    margin-bottom: 30px !important;
+    font-family: monospace !important;
+    font-weight: normal !important
+  }
+.heading-signin{
+    font-family: monospace !important;
+}
+
+.button-signin{
+  margin: 20px 0px 5px 0px  !important;
+}
