@@ -105,13 +105,29 @@ const SignUp = (props) =>{
                 Name:'preferred_username',
                 Value: userName
             })]
-            UserPool.signUp(email,password,attributes,null, (err , data)=>{
-                
+            UserPool.signUp(email,password,attributes,null, (err , {userSub})=>{
                 if (err) {
                    setErrorMessage(err.message);
                 }
                 else {
-                    props.setViewLogin(true)
+
+                    const user_data = {
+                                username: userName,
+                                user_id: userSub,
+                                email: email
+                            }
+                            console.log('user_data:',user_data);
+                        fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/signup',{
+                            method:'POST', 
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Access-Control-Allow-Origin':'*'
+                            },
+                            body: JSON.stringify(user_data)
+                            })
+                            .then(response => response.json())
+                            .then(data => { console.log(data); props.setViewLogin(true)})
+                            .catch(err => console.log('error:',err));
                 }
             })
         }

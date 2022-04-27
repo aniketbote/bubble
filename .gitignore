@@ -18,6 +18,12 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
 
+# Not needed
+frontend/package-lock.json
+frontend/src/App.css 
+frontend/src/App.test.js 
+frontend/src/setupTests.js
+
 
 # Aniket User files
 new_user_credentials.csv
