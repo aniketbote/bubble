@@ -2,7 +2,6 @@ import './questionPage.style.css';
 import { useEffect, useState,useContext } from 'react';
 import { Chip, Grid, Paper } from '@mui/material';
 import timeDifference from '../../helper/time-difference'
-import DOMPurify from 'dompurify';
 import { AccountContext } from '../../Account/Account.context';
 import AnswerSection from '../../components/answerSection/answerSection.component'
 import CommentSection from '../../components/commentSection/commentSection.component';
@@ -32,7 +31,7 @@ const QuestionPage = ()=>{
                     </div>
                     <div className='horizontal-line' />
                     <Paper style={{padding:'20px'}} elevation={4}>
-                        <div className='description-div' dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(data.question_description)}}></div>
+                        <div className='description-div' dangerouslySetInnerHTML={{__html:data.question_description}}></div>
                         <Grid container spacing={1}>
                             {data.tags?data.tags.map(key => (
                                 <Grid item key={key}>

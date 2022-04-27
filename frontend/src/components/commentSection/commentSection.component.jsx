@@ -22,7 +22,8 @@ const CommentSection = ({answer_id,question_id,blog_id,comment_ids}) =>{
         {comment_ids.length > 0 ?
             <div style={{padding:'10px 10px 10px 10px'}}>
             {
-                comments.map((comment)=>{
+                comments.sort((a,b)=> parseInt(new Date(a.timestamp) - new Date(b.timestamp)))
+                .map((comment)=>{
                     const x = `   - <span class='color-blue'>${comment.username} </span> <span class='size-smaller'>${timeDifference(comment.timestamp)}</span>` 
                     return(
                         <div className="comment-outer" key={comment.comment_id}>

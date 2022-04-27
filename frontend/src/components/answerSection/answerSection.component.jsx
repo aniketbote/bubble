@@ -17,11 +17,15 @@ const AnswerSection = ({answer_ids, question_id}) =>{
         .then(response => response.json())
         .then(data => { setAnswers(data)})
    },[answer_ids])
+    
+
     return (
         <>
           {answers.length>0?<>
             <h3 style={{margin:'20px 10px 10px 10px'}}>{answers.length} {answers.length>1?<span>Answers</span>:<span>Answer</span>}</h3>
-                {answers.map((answer)=>{
+                {
+                answers.sort((a,b)=> parseInt(new Date(a.timestamp) - new Date(b.timestamp)))
+                .map((answer)=>{
                     return (<Paper elevation={4} key={answer.answer_id} style={{margin:'10px 0px', padding:'15px'}}  >
                                 <div dangerouslySetInnerHTML={{__html:answer.answer}}/>
                                 <div className='answer-card-user' style={{display:'flex',marginTop:'20px',justifyContent:'right'}}>
