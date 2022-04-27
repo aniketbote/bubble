@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import DOMPurify from 'dompurify';
 import './commentSection.style.css';
 import timeDifference from "../../helper/time-difference";
 import CommentEditor from "../commentEditor/commentEditor.component";
@@ -21,23 +20,21 @@ const CommentSection = ({answer_id,question_id,blog_id,comment_ids}) =>{
     return(
         <>
         {comment_ids.length > 0 ?
-            <div style={{padding:'20px 4% 10px 4%'}}>
+            <div style={{padding:'10px 10px 10px 10px'}}>
             {
                 comments.map((comment)=>{
+                    const x = `   - <span class='color-blue'>${comment.username} </span> <span class='size-smaller'>${timeDifference(comment.timestamp)}</span>` 
                     return(
                         <div className="comment-outer" key={comment.comment_id}>
                             <div className="horizontal-line-1"/>
-                            <div className="comment-div" dangerouslySetInnerHTML={{__html:'<p>'+DOMPurify.sanitize(comment.comment_content)+'</p>'}} />
+                            <div className="comment-div" dangerouslySetInnerHTML={{__html: '<p>' + comment.comment_content + x +'</p>' }} />
                             <div style={{display:'flex',justifyContent:'right'}}> 
-                                <p style={{fontSize:'12px'}} className='time-text'>commented by  
-                                    <span className='user-text'> {comment.username} </span> 
-                                    {timeDifference(comment.timestamp)}.
-                                </p>     
+                                   
                             </div>
                         </div>
                     )})}
         </div>:null}
-        <CommentEditor question_id={question_id} answer_id={answer_id} blog_id={blog_id}/>
+        <CommentEditor comments={comments} setComments={setComments} question_id={question_id} answer_id={answer_id} blog_id={blog_id}/>
         </>
         )
 }

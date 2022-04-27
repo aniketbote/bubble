@@ -116,7 +116,6 @@ const SignUp = (props) =>{
                                 user_id: userSub,
                                 email: email
                             }
-                            console.log('user_data:',user_data);
                         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/signup',{
                             method:'POST', 
                             headers: {
@@ -126,7 +125,7 @@ const SignUp = (props) =>{
                             body: JSON.stringify(user_data)
                             })
                             .then(response => response.json())
-                            .then(data => { console.log(data); props.setViewLogin(true)})
+                            .then(data => { props.setViewLogin(true)})
                             .catch(err => console.log('error:',err));
                 }
             })
