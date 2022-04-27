@@ -106,7 +106,7 @@ const SignUp = (props) =>{
                 Value: userName
             })]
             UserPool.signUp(email,password,attributes,null, (err , data)=>{
-                console.log(data)
+                
                 if (err) {
                    setErrorMessage(err.message);
                 }
