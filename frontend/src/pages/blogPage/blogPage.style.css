@@ -1,4 +1,4 @@
-.questionPageContainer{
+.blogPageContainer{
     display: flex;
     height: 100%;
 }
@@ -18,7 +18,7 @@
     overflow: auto;
 }
 
-.questionPageContainer .horizontal-line{
+.blogPageContainer .horizontal-line{
     border-bottom:1px solid rgb(214, 208, 208);
     margin-bottom:20px ;
 }
@@ -45,18 +45,18 @@
     color: black;
     font-weight: 600;
 }
+
 .right-column{
     min-width:300px;
     margin: -10px -10px -12px 8px;
 
 }
 
-@media only screen and (max-width: 993px) {
-    .questionPageContainer{
+@media only screen and (max-width: 1200px) {
+    .blogPageContainer{
         flex-direction: column;
     }
     .right-column{
         display: none;
     }
-
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactSummernote from 'react-summernote';
+import uuid from 'react-uuid';
 import 'bootstrap/js/dist/modal';
 import 'bootstrap/js/dist/dropdown';
 import 'bootstrap/js/dist/tooltip';
@@ -13,7 +14,8 @@ class RichPlainTextEditor extends Component {
     this.props = props
     this.state = {
       viewImageUpload: false,
-      imageTextField:''
+      imageTextField:'',
+      className:'class_'+uuid()
     };
   }
 
@@ -25,10 +27,20 @@ class RichPlainTextEditor extends Component {
       this.props.setContent('');
     }
   }
+  componentDidMount(){
+    this.editArea=document.querySelector(`.${this.state.className} .note-editable`)
+  }
   
+  componentDidUpdate(){
+    if(this.props.reset){
+      this.editArea.innerHTML = '';
+      this.props.setContent('');
+    }
+  }
   render() {
     return (
         <ReactSummernote
+          className={this.state.className}
           options={{
             placeholder:this.props.placeholder,
             height: this.props.height,

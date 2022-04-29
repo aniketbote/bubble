@@ -6,7 +6,7 @@ const AnswerEditor= ({answers,setAnswers,question_id})=>{
     const [content,setContent] = useState('');
     const {session} = useContext(AccountContext);
     const [disableBtn,setDisableBtn]= useState(true);
-
+    const [reset,setReset] = useState(false); 
     useEffect(()=>{
         if(content.replace( /(<([^>]+)>)/ig, '')
         .replace(/&nbsp;/gi,'')
@@ -38,20 +38,26 @@ const AnswerEditor= ({answers,setAnswers,question_id})=>{
             })
             .then(response => response.json())
             .then(resData => { 
-            const item={
-                answer_id: resData.answer_id,
-                answer: content,
-                username: data.username,
-                comment_ids:[],
-                timestamp: resData.timestamp
-            }
-            setAnswers([...answers,item]);
+                const item={
+                    answer_id: resData.answer_id,
+                    answer: content,
+                    username: data.username,
+                    comment_ids:[],
+                    timestamp: resData.timestamp,
+                    downvotes:0,
+                    upvotes:0,
+                    user_id:data.user_id
+                }
+                setAnswers([...answers,item]);
+                setReset(true);
+                setReset(false);
             })
             }
+            
     return ( 
         <>
             <h3 style={{margin:'15px'}}>Your Answer</h3>
-            <RichTextEditor setContent={setContent} height={300}/>
+            <RichTextEditor reset={reset} setContent={setContent} height={300}/>
             <div style={{display:'flex'}}>
                 <p style={{margin:'-10px 12px',paddingTop:'',background:'#FFFFE0',color:'#FF726F'}}>* Length of the answer must be at least 100 alphanumeric characters to submit the answer.</p>
             </div>

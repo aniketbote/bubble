@@ -10,6 +10,7 @@ import BasePage from './pages/basePage/basePage.component';
 import QuestionCreationPage from './pages/questionCreationPage/questionCreation.component';
 import BlogCreationPage from './pages/blogCreationPage/blogCreation.component';
 import QuestionPage from './pages/questionPage/questionPage.component';
+import BlogPage from './pages/blogPage/blogPage.component';
 function App() {
   
   const {userStatus,setUserStatus,getSession,setSession} = useContext(AccountContext)
@@ -30,6 +31,7 @@ function App() {
             <Route exact path="create_question" element={<QuestionCreationPage/>}/>
             <Route exact path="create_blog" element={<BlogCreationPage/>}/>
             <Route exact path="question" element={<QuestionPage/>}/>
+            <Route exact path="blog" element={<BlogPage/>}/>
             <Route exact path="" element={<HomePage/>}/>
           </Route>
           <Route exact  path="/login" element={!userStatus?<LoginSignupPage/>:<Navigate replace to="/"/>}/>

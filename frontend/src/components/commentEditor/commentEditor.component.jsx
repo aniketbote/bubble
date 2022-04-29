@@ -8,7 +8,7 @@ const CommentEditor = ({question_id,answer_id,blog_id,comments,setComments})=>{
     const [content,setContent] = useState('');
     const {session} = useContext(AccountContext);
     const [disableBtn,setDisableBtn]= useState(true);
-
+    const [reset,setReset] = useState(false);
     useEffect(()=>{
         if(content.replace( /(<([^>]+)>)/ig, '')
         .replace(/&nbsp;/gi,'')
@@ -20,27 +20,62 @@ const CommentEditor = ({question_id,answer_id,blog_id,comments,setComments})=>{
         }
     },[content])
 
+
+    
     const post_comment = () =>{
         if(content.replace( /(<([^>]+)>)/ig, '')
                   .replace(/&nbsp;/gi,'')
                   .replace(/\s/g ,'').length < 80 ){return ;}
 
+        var data={
+            username: session.idToken.payload.preferred_username,
+            user_id: session.idToken.payload.sub,
+            comment_content: content.replace( /(<([^>]+)>)/ig, '')
+        };                            
+
         if(question_id!==undefined){
-            console.log('question');
+            data.question_id = question_id;
         }
         else if(answer_id!==undefined){
-            console.log('answer')
+            data.answer_id = answer_id;
         }
+        else if(blog_id!==undefined){
+            data.blog_id = blog_id;
+        }
+        fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/post_comment',{
+            method:'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin':'*'
+            },
+            body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(resData => { 
+                const item={
+                    comment_id: resData.comment_id,
+                    comment_content: data.comment_content,
+                    username: data.username,
+                    timestamp: resData.timestamp,
+                    user_id:data.user_id
+                }
+                setComments([...comments,item]);
+                setReset(true);
+                setReset(false);
+                setShowCommentEditor(false);
+                })
+            .catch(err=>{console.log(err)})
+
     }
     return(<>
         <Button onClick={()=>{setShowCommentEditor(true)}} style={{fontSize:'12px',marginBottom:'5px'}} variant="text">add a comment</Button>
         {showCommentEditor?<>
-            <RichPlainTextEditor setContent={setContent}  height={100}/>
+            <RichPlainTextEditor reset={reset}  setContent={setContent}  height={100}/>
             <div style={{display:'flex'}}>
                 <p style={{margin:'-10px 0px',paddingTop:'',background:'#FFFFE0',color:'#FF726F'}}>* Length of the comment must be at least 80 alphanumeric characters to submit the comment.</p>
             </div>
             <div style={{display:'flex',justifyContent:'right'}}>
-                <Button disabled={disableBtn} onClick={post_comment} style={{fontSize:'14px',marginTop:'-10px'}} variant="contained">Submit</Button>
+                <Button disabled={disableBtn} onClick={post_comment} style={{fontSize:'12px',marginTop:'-10px'}} variant="contained">Post Your Comment</Button>
             </div>
         </>:null}
     </>)

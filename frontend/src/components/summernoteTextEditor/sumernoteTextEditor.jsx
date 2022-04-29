@@ -14,7 +14,6 @@ import './summernoteTextEditor.css';
 import axios from 'axios';
 import uuid from 'react-uuid';
 
-var editArea;
 
 class RichTextEditor extends Component {
   
@@ -23,7 +22,9 @@ class RichTextEditor extends Component {
     this.props = props;
     this.state = {
       viewImageUpload: false,
-      imageTextField:''
+      imageTextField:'',
+      className: 'class_'+uuid(),
+      id: 'id_'+uuid()
     };
   }
 
@@ -37,7 +38,7 @@ class RichTextEditor extends Component {
   }
 
   onInsertImage = ()=>{
-    const input = document.querySelector('#customImage');
+    const input = document.querySelector(`#${this.state.id}`);
     if(input.files.length>0){
       const file = input.files[0];
       const headers = {
@@ -48,54 +49,61 @@ class RichTextEditor extends Component {
         const file_name = `${uuid()}_${file.name}`
         axios.put(`https://ig6dvmrlt3.execute-api.us-east-1.amazonaws.com/v1/upload/b2-ac9137/${file_name}`, file, {headers})
         .then(response => {
-            editArea.innerHTML+= `<p><img src='https://b2-ac9137.s3.amazonaws.com/${file_name}'/></p>` ;
-            this.props.setContent(editArea.innerHTML)
+            this.editArea.innerHTML+= `<p><img src='https://b2-ac9137.s3.amazonaws.com/${file_name}'/></p>` ;
+            this.props.setContent(this.editArea.innerHTML)
           })
           .catch(error => {
             console.error('There was an error!', error);
         });
     }
     else if(this.state.imageTextField!==''){
-      editArea.innerHTML+= `<p><img src='${this.state.imageTextField}'/></p>` ;
-      this.props.setContent(editArea.innerHTML)
+      this.editArea.innerHTML+= `<p><img src='${this.state.imageTextField}'/></p>` ;
+      this.props.setContent(this.editArea.innerHTML)
       this.setState({imageTextField:''})
     }
     this.setState({ viewImageUpload: false})
   }
+  componentDidUpdate(){
+    if(this.props.reset){
+      this.editArea.innerHTML = '';
+      this.props.setContent('');
+    }
+  }
 
   componentDidMount(){
-    const toolBar = document.querySelector('.note-insert');
+    const toolBar = document.querySelector(`.${this.state.className} .note-insert`);
     const button = document.createElement('button');
     button.innerHTML = "<i class='note-icon-picture'> </i>";
     button.classList=["note-btn btn btn-default btn-sm"];
     button.onclick =  ()=>{this.setState({ viewImageUpload: true})};
     toolBar.appendChild(button);
-    editArea=document.querySelector('.note-editable')
-    editArea.innerHTML='';
+    this.editArea=document.querySelector(`.${this.state.className} .note-editable`)
+    this.editArea.innerHTML='';
+    this.ImageUpload = <Paper elevation={6} tabIndex="1" className='insert-upload-image'>
+                    <div className="flex-container">
+                      <div className='row-one'>
+                        <div style={{flexGrow:1}}><p style={{fontSize:'20px',margin:'12px'}}>Insert Image</p></div>
+                        <IconButton onClick={()=>{this.setState({ viewImageUpload: false})}}  aria-label="close" component="span">
+                          <CloseIcon />
+                        </IconButton>
+                      </div>
+                      <div style={{borderTop:'1px solid grey',margin:'5px'}}/>
+                      <div className="row-two">
+                        <p className='text-image'> UPLOAD IMAGE: </p>
+                        <input style={{width:'100%',paddingBottom:'28px'}} type="file" accept='image/*' className="form-control" id={this.state.id} />
+                      </div>
+                      <div className='row-three' ><p className='text-image'> OR </p></div>
+                      <div className="row-four">
+                        <p className="text-image">&nbsp;&nbsp;&nbsp;&nbsp;IMAGE URL:</p>
+                        <TextField style={{width:'100%'}} onChange={e=>this.setState({imageTextField:e.target.value})}  id="filled-basic" label="Image URL" variant="outlined"  />
+                      </div>
+                      
+                      <div className="row-five"><Button onClick={this.onInsertImage} style={{fontSize:'12px'}} variant="contained">INSERT</Button></div>      
+                  </div>
+</Paper>
   }
 
-  ImageUpload = <Paper elevation={6} tabIndex="1" className='insert-upload-image'>
-                  <div className="flex-container">
-                    <div className='row-one'>
-                      <div style={{flexGrow:1}}><p style={{fontSize:'20px',margin:'12px'}}>Insert Image</p></div>
-                      <IconButton onClick={()=>{this.setState({ viewImageUpload: false})}}  aria-label="close" component="span">
-                        <CloseIcon />
-                      </IconButton>
-                    </div>
-                    <div style={{borderTop:'1px solid grey',margin:'5px'}}/>
-                    <div className="row-two">
-                      <p className='text-image'> UPLOAD IMAGE: </p>
-                      <input style={{width:'100%',paddingBottom:'28px'}} type="file" accept='image/*' className="form-control" id="customImage" />
-                    </div>
-                    <div className='row-three' ><p className='text-image'> OR </p></div>
-                    <div className="row-four">
-                      <p className="text-image">&nbsp;&nbsp;&nbsp;&nbsp;IMAGE URL:</p>
-                      <TextField style={{width:'100%'}} onChange={e=>this.setState({imageTextField:e.target.value})}  id="filled-basic" label="Image URL" variant="outlined"  />
-                    </div>
-                    
-                    <div className="row-five"><Button onClick={this.onInsertImage} style={{fontSize:'12px'}} variant="contained">INSERT</Button></div>      
-                  </div>
-              </Paper>
+ 
   render() {
     
     return (
@@ -103,6 +111,7 @@ class RichTextEditor extends Component {
         {this.state.viewImageUpload? <div tabIndex={1} onClick={()=>{this.setState({ viewImageUpload: false})}} className='insert-upload-image-background' /> : null}
         {this.state.viewImageUpload? this.ImageUpload : null}
         <ReactSummernote
+          className={this.state.className}
           options={{
             placeholder:this.props.placeholder,
             height: this.props.height,
