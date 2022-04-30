@@ -35,7 +35,7 @@ const QuestionPage = ()=>{
                                 <p className='time-text'>Asked by <span className='user-text'>{data.username}</span> {timeDifference(data.timestamp)}.</p>       
                             </div>
                             <div className='horizontal-line' />
-                            <Paper style={{padding:'20px',flexGrow:1}} elevation={4}>
+                            <Paper style={{padding:'20px',flexGrow:1}} elevation={4}> 
                                 <div style={{display:'flex',flexDirection:'row'}}>
                                     <VoteComponent vote_count={data.upvotes-data.downvotes}/>
                                     <div className='description-div' dangerouslySetInnerHTML={{__html:data.question_description}}></div>
