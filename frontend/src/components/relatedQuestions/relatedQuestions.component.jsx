@@ -26,7 +26,7 @@ const RelatedQuestions = ({question_id}) =>{
                             questions.map((question)=>{
                                 return  <li key={question.question_id} >
                                             <div style={{display:'flex'}}>
-                                                <Chip style={{fontSize:'10px',minWidth:'40px'}} 
+                                                <Chip style={{fontSize:'10px',paddingTop:'3px',minWidth:'40px'}} 
                                                       label={question.vote_count} 
                                                     color={question.accepted_answer!==""?"success":"warning"} size="small" variant="outlined" />
                                                 <Link className="rel-question-link"  to={'/question/'+question.question_id}> {question.question_title} </Link> 

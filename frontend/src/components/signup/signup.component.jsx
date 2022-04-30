@@ -55,7 +55,7 @@ const SignUp = (props) =>{
 
     const onEmailChange = (e)=>{
         setEmail(e.target.value)
-        const regularExpression = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$');
+        const regularExpression = new RegExp('^[a-zA-Z0-9._:$!%-]+@nyu.edu$');
         if(regularExpression.test(e.target.value))
         {
             setErrorEmailMessage('');
@@ -63,7 +63,7 @@ const SignUp = (props) =>{
         }
         else
         {
-            const message =`Please enter a valid email address.`
+            const message =`Please enter a valid NYU email address.(e.g. netid@nyu.edu)`
             setErrorEmailMessage(message);
             setErrorEmail(true);
         } 
