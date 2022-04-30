@@ -56,7 +56,7 @@ const AnswerEditor= ({answers,setAnswers,question_id})=>{
             
     return ( 
         <>
-            <h3 style={{margin:'15px'}}>Your Answer</h3>
+            <h3 style={{margin:'15px',paddingTop:'15px'}}>Your Answer</h3>
             <RichTextEditor reset={reset} setContent={setContent} height={300}/>
             <div style={{display:'flex'}}>
                 <p style={{margin:'-10px 12px',paddingTop:'',background:'#FFFFE0',color:'#FF726F'}}>* Length of the answer must be at least 100 alphanumeric characters to submit the answer.</p>

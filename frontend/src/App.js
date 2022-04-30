@@ -30,8 +30,8 @@ function App() {
           <Route exact  path="/"  element={userStatus?<BasePage/>:<Navigate replace to="login"/>}>
             <Route exact path="create_question" element={<QuestionCreationPage/>}/>
             <Route exact path="create_blog" element={<BlogCreationPage/>}/>
-            <Route exact path="question" element={<QuestionPage/>}/>
-            <Route exact path="blog" element={<BlogPage/>}/>
+            <Route exact path="question/:question_id" element={<QuestionPage/>}/>
+            <Route exact path="blog/:blog_id" element={<BlogPage/>}/>
             <Route exact path="" element={<HomePage/>}/>
           </Route>
           <Route exact  path="/login" element={!userStatus?<LoginSignupPage/>:<Navigate replace to="/"/>}/>

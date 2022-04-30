@@ -75,7 +75,7 @@ const CommentEditor = ({question_id,answer_id,blog_id,comments,setComments})=>{
                 <p style={{margin:'-10px 0px',paddingTop:'',background:'#FFFFE0',color:'#FF726F'}}>* Length of the comment must be at least 80 alphanumeric characters to submit the comment.</p>
             </div>
             <div style={{display:'flex',justifyContent:'right'}}>
-                <Button disabled={disableBtn} onClick={post_comment} style={{fontSize:'12px',marginTop:'-10px'}} variant="contained">Post Your Comment</Button>
+                <Button disabled={disableBtn} onClick={post_comment} style={{fontSize:'12px',marginTop:'-10px'}} variant="contained">Submit</Button>
             </div>
         </>:null}
     </>)

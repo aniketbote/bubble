@@ -4,11 +4,11 @@ import { Chip, Grid, Paper } from '@mui/material';
 import timeDifference from '../../helper/time-difference'
 import { AccountContext } from '../../Account/Account.context';
 import CommentSection from '../../components/commentSection/commentSection.component';
-import { minWidth } from '@mui/material/node_modules/@mui/system';
+import { useParams } from 'react-router-dom';
 const BlogPage = ()=>{
-    const {session} = useContext(AccountContext)
-    const [data,setData] = useState({})
-
+    const {session} = useContext(AccountContext);
+    const [data,setData] = useState({});
+    const {blog_id} = useParams();
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_blog',{
             method:'POST',
@@ -16,11 +16,11 @@ const BlogPage = ()=>{
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin':'*'
               },
-            body: JSON.stringify({blog_id:"023f38e5a0d44287a8d452c890c735b1"})
+            body: JSON.stringify({blog_id:blog_id})
             })
             .then(response => response.json())
             .then(data => {console.log(data); setData(data)})
-    },[])
+    },[blog_id])
     
     return (
         <div className='blogPageContainer'>

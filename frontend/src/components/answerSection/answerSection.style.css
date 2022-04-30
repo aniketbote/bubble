@@ -1,4 +1,3 @@
 .answer-div{
-    overflow-wrap: break-word;
-    word-break: break-all;
+    flex-grow: 1;
 }
