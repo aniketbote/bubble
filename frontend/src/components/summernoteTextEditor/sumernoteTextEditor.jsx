@@ -49,7 +49,7 @@ class RichTextEditor extends Component {
         const file_name = `${uuid()}_${file.name}`
         axios.put(`https://ig6dvmrlt3.execute-api.us-east-1.amazonaws.com/v1/upload/b2-ac9137/${file_name}`, file, {headers})
         .then(response => {
-            this.editArea.innerHTML+= `<p><img src='https://b2-ac9137.s3.amazonaws.com/${file_name}'/></p>` ;
+            this.editArea.innerHTML+= `<img src='https://b2-ac9137.s3.amazonaws.com/${file_name}'/>` ;
             this.props.setContent(this.editArea.innerHTML)
           })
           .catch(error => {
@@ -57,7 +57,7 @@ class RichTextEditor extends Component {
         });
     }
     else if(this.state.imageTextField!==''){
-      this.editArea.innerHTML+= `<p><img src='${this.state.imageTextField}'/></p>` ;
+      this.editArea.innerHTML+= `<img src='${this.state.imageTextField}'/>` ;
       this.props.setContent(this.editArea.innerHTML)
       this.setState({imageTextField:''})
     }

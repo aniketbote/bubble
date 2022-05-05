@@ -3,6 +3,7 @@ import SearchBar from '../../components/search/search.component';
 import QuestionCard from '../../components/questionCard/questionCard.component';
 import BlogCard from '../../components/blogCard/blogCard.component';
 const HomePage = () => {
+
     return (
     <div >
     <SearchBar/>

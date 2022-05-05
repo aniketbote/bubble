@@ -2,14 +2,12 @@ import './questionPage.style.css';
 import { useEffect, useState,useContext } from 'react';
 import { Chip, Grid, Paper } from '@mui/material';
 import timeDifference from '../../helper/time-difference'
-import { AccountContext } from '../../Account/Account.context';
 import AnswerSection from '../../components/answerSection/answerSection.component'
 import CommentSection from '../../components/commentSection/commentSection.component';
 import RelatedQuestions from '../../components/relatedQuestions/relatedQuestions.component';
 import { useParams } from 'react-router-dom';
 import VoteComponent from '../../components/vote/vote.component';
 const QuestionPage = ()=>{
-    const {session} = useContext(AccountContext)
     const [data,setData] = useState({})
     const {question_id} =useParams()
     useEffect(()=>{
@@ -29,7 +27,7 @@ const QuestionPage = ()=>{
         <div className='questionPageContainer'>
                 <div className='content-column'>
                     <div style={{display:'flex',flexDirection:'row',flexGrow:1}}>
-                        <div style={{flexDirection:'column',flexGrow:1}}>
+                        <div className='left-column' style={{flexDirection:'column',flexGrow:1}}>
                             <div style={{paddingLeft:'10px',flexGrow:1}}>
                                 <h3>{data.question_title}</h3>
                                 <p className='time-text'>Asked by <span className='user-text'>{data.username}</span> {timeDifference(data.timestamp)}.</p>       
@@ -37,7 +35,7 @@ const QuestionPage = ()=>{
                             <div className='horizontal-line' />
                             <Paper style={{padding:'20px',flexGrow:1}} elevation={4}> 
                                 <div style={{display:'flex',flexDirection:'row'}}>
-                                    <VoteComponent vote_count={data.upvotes-data.downvotes}/>
+                                    {data.upvotes!==undefined?<VoteComponent type={"question"} id={data.question_id} vote_count={data.upvotes-data.downvotes}/>:null}
                                     <div className='description-div' dangerouslySetInnerHTML={{__html:data.question_description}}></div>
                                 </div>
                                 <Grid container spacing={1}>

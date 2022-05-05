@@ -18,10 +18,10 @@ const RelatedQuestions = ({question_id}) =>{
     },[question_id])
         
     return <div className="related-questions-div">
-                <p className='header' >Related Answers</p>
+                <p className='header' >Related Questions</p>
                 {
                     questions.length>0?
-                    <ul style={{listStyle: 'none',marginTop:'20px',marginLeft:'-20px'}}>
+                    <ul className='related-list'>
                         {
                             questions.map((question)=>{
                                 return  <li key={question.question_id} >

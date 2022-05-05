@@ -34,7 +34,7 @@ const AnswerSection = ({answer_ids, question_id}) =>{
               .map((answer)=>{
                   return (<Paper elevation={4} key={answer.answer_id} style={{margin:'10px 0px', padding:'15px'}}  >
                               <div style={{display:'flex' ,flexDirection:'row'}}>
-                                <VoteComponent vote_count={answer.upvotes-answer.downvotes}/>
+                                <VoteComponent type={"answer"} id={answer.answer_id} vote_count={answer.upvotes-answer.downvotes}/>
                                 <div className="answer-div" dangerouslySetInnerHTML={{__html:answer.answer}}/>
                               </div>
                               <div className='answer-card-user' style={{display:'flex',marginTop:'20px',justifyContent:'right'}}>
