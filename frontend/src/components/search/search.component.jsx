@@ -6,7 +6,18 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchBar = ()=>(
+
+
+
+const SearchBar = ({setSearchString,get_search_results})=>{
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      get_search_results();
+    }
+  }
+  return(
     <div className='outer-box'>
     <Paper
       className='paper-box'
@@ -18,12 +29,14 @@ const SearchBar = ()=>(
         sx={{ ml: 1, flex: 1 }}
         placeholder="search..."
         inputProps={{ 'aria-label': 'search google maps' }}
+        onChange={(e)=>{setSearchString(e.target.value)}}
+        onKeyDown={handleKeyDown}
       />
-      <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+      <IconButton onClick={e=>{get_search_results()}} sx={{ p: '10px' }} aria-label="search">
         <SearchIcon />
       </IconButton>
       <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
     </Paper>
     </div>
-)
-export default SearchBar
+)}
+export default SearchBar;
