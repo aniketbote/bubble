@@ -1,0 +1,7 @@
+.MuiPaginationItem-text{
+    font-size: 12px !important;
+}
+.MuiPagination-root{
+    justify-content: center !important;
+    display: flex !important;
+}

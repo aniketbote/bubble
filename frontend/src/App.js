@@ -12,6 +12,7 @@ import BlogCreationPage from './pages/blogCreationPage/blogCreation.component';
 import QuestionPage from './pages/questionPage/questionPage.component';
 import BlogPage from './pages/blogPage/blogPage.component';
 import QuestionListPage from './pages/questionsListPage/questionsList.component';
+import BlogListPage from './pages/blogListPage/blogList.component';
 
 function App() {
   
@@ -37,7 +38,7 @@ function App() {
             <Route exact path="" element={<HomePage/>}/>
             <Route exact path="home" element={<HomePage/>}/>
             <Route exact path="questions" element={<QuestionListPage/>}/>
-            <Route exact path="blogs" element={<BlogCreationPage/>}/>
+            <Route exact path="blogs" element={<BlogListPage/>}/>
           </Route>
           <Route exact  path="/login" element={!userStatus?<LoginSignupPage/>:<Navigate replace to="/"/>}/>
           <Route  path="*" element={<ErrorPage/>}/>

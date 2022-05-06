@@ -1,25 +1,25 @@
 import Paper from '@mui/material/Paper';
 import { Link } from 'react-router-dom';
+import timeDifference from '../../helper/time-difference';
 import './blogCard.style.css';
 
-const BlogCard = () =>{
-    
+const BlogCard = ({blog}) =>{
     return (
     <Paper className='card' elevation={1}>
         <div className='col-1'>
-            <p className='text'>{5} votes</p>
-            <p className='text'>{2} comments</p>
-            <p className='text'>{15} min read</p>
+            <p className='text'>{blog.vote_count} votes</p>
+            <p className='text'>{blog.comment_count} comments</p>
+            <p className='text'>{blog.read_time} min read</p>
         </div>
         <div className='vl'></div>
         <div className='col-2'>
             <div className='single-line'>
-                <Link className='header-link' to={''}><h4>React Native at Airbnb </h4> </Link>  
+                <Link className='header-link' to={`/blog/${blog.blog_id}`}><h4>{blog.blog_title}</h4> </Link>  
             </div>
-            <p className='blog-text'>Although many teams relied on React Native and had planned on using it for the foreseeable future, we were ultimately unable to meet our original goals. In addition, there were a number of technical and organizational challenges that we were unable to overcome that would have made continuing to invest in React Native a challenge. When React Native worked as intended, engineers were able to move at an unparalleled speed.  </p>
+            <p className='blog-text'>{blog.short_blog_description}</p>
         </div>
         <div className='col-3'>
-            <p> <span style={{color:'blue'}}> {'John Snow'} </span> posted 15 minutes ago</p>
+            <p> <span style={{color:'blue'}}> {blog.username} </span> posted {timeDifference(blog.timestamp)}</p>
         </div>
     </Paper>
 );}

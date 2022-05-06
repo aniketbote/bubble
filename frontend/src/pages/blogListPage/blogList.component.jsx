@@ -1,12 +1,12 @@
-import './questionsList.style.css';
+import './blogList.style.css';
 import SearchBar from '../../components/search/search.component';
-import QuestionCard from '../../components/questionCard/questionCard.component';
+import BlogCard from '../../components/blogCard/blogCard.component';
 import { useEffect, useState } from 'react';
 import { Button, Pagination } from '@mui/material';
 import { useNavigate } from 'react-router';
 
-const QuestionListPage = () => {
-    const [questions,setQuestions] = useState([]);
+const BlogListPage = () => {
+    const [blogs,setBlogs] = useState([]);
     const [start,setStart] = useState(0);
     const [searchString,setSearchString] = useState('');
     const [searched,setSearched] = useState(false);
@@ -18,7 +18,7 @@ const QuestionListPage = () => {
     const container = document.querySelector('.contentBar');
 
     useEffect(()=>{
-        fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_latest_questions?start='+start,{
+        fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_latest_blog?start='+start,{
             method:'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const QuestionListPage = () => {
             })
             .then(response => response.json())
             .then(data => {if (data.body.length > 0){
-                setQuestions(data.body) 
+                setBlogs(data.body) 
                 if(container!==null){
                     container.scrollTop = 0 ;
                 }
@@ -37,7 +37,7 @@ const QuestionListPage = () => {
     const get_search_results = ()=>{
         if(searchString!==''){
             setSearched(true)
-            fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/search_question?search_string='+searchString,{
+            fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/search_blog?search_string='+searchString,{
                 method:'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const QuestionListPage = () => {
                 .then(response => response.json())
                 .then(data => {
                     if (data.body.length > 0){
-                        setQuestions(data.body) 
+                        setBlogs(data.body) 
                         container.scrollTop = 0 ;
                     }
                     else{
@@ -74,7 +74,7 @@ const QuestionListPage = () => {
                 <Button style={{fontSize:'small'}} 
                         variant='text' 
                         size='large'
-                        onClick={()=>{setSearchString('');setSearched(false);setNoSearchResults(false)}}> get back to recent questions </Button>
+                        onClick={()=>{setSearchString('');setSearched(false);setNoSearchResults(false)}}> get back to recent blogs </Button>
             </div>
         )
     }
@@ -85,23 +85,23 @@ const QuestionListPage = () => {
             <div style={{paddingTop:'15px'}} >
                 <div style={{display:'flex', flexDirection:'row'}}>
                     <h3 style={{marginLeft:'15px',flexGrow:1}}>
-                        {searched?<span>Searched Question Results - <span style={{color:'blue'}}>{searchString}</span></span>
-                        : 'Recent Questions'} </h3>
+                        {searched?<span>Searched Blog Results - <span style={{color:'blue'}}>{searchString}</span></span>
+                        : 'Recent Blogs'} </h3>
                         <Button style={{fontSize:'14px',marginRight:'20px'}} 
                                 size='' 
                                 variant='text'
-                                onClick={()=>{navigate('/create_question')}}>ASK A QUESTION</Button>
+                                onClick={()=>{navigate('/create_blog')}}>POST A BLOG</Button>
                 </div>
                 <div style={{paddingTop:'15px'}}>
-                    {questions.sort((a,b)=> parseInt(new Date(b.timestamp) - new Date(a.timestamp)))
-                                .map((question)=> <QuestionCard question={question}  key={question.question_id}/>)}
+                    {blogs.sort((a,b)=> parseInt(new Date(b.timestamp) - new Date(a.timestamp)))
+                                .map((blog)=> <BlogCard blog={blog}  key={blog.blog_id}/>)}
                 </div>
                 <div style={{padding:'20px 0px'}}>
-                         {questions.length>0 && !searched ?<Pagination onChange={(_,val)=>{setStart(val-1)}}  color='primary' count={start+5} size="large"/>:<></>}
+                         {blogs.length>0 && !searched ?<Pagination onChange={(_,val)=>{setStart(val-1)}}  color='primary' count={start+5} size="large"/>:<></>}
                 </div>
             </div>
         </>
     );
 }
 
-export default QuestionListPage;
+export default BlogListPage;
