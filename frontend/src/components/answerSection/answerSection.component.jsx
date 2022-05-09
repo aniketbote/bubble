@@ -1,12 +1,18 @@
-import { Paper } from "@mui/material";
-import { useEffect, useState } from "react";
+import { IconButton, Paper } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import { AccountContext } from "../../Account/Account.context";
 import timeDifference from "../../helper/time-difference";
 import AnswerEditor from "../answerEditor/answerEditor.component";
 import CommentSection from "../commentSection/commentSection.component";
 import VoteComponent from "../vote/vote.component";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import './answerSection.style.css';
+
 const AnswerSection = ({answer_ids, question_id}) =>{
     const [answers,setAnswers] = useState([]);
+    const {session} = useContext(AccountContext);
+    const user_id = session.idToken.payload.sub;
    useEffect(()=>{
      if(answer_ids.length>0)
      {
@@ -33,6 +39,16 @@ const AnswerSection = ({answer_ids, question_id}) =>{
               answers.sort((a,b)=> parseInt(new Date(a.timestamp) - new Date(b.timestamp)))
               .map((answer)=>{
                   return (<Paper elevation={4} key={answer.answer_id} style={{margin:'10px 0px', padding:'15px'}}  >
+                            {user_id===answer.user_id?
+                              <div style={{display:'flex',flexDirection:'row'}}>
+                                  <div style={{flexGrow:1}}/>
+                                    <IconButton title='Edit'>
+                                        <EditIcon style={{color:'#003060'}} fontSize='large'/>
+                                    </IconButton>
+                                    <IconButton title='Delete'>
+                                        <DeleteIcon style={{color:'#E7625F'}} fontSize='large'/>
+                                    </IconButton>
+                              </div>:null}
                               <div style={{display:'flex' ,flexDirection:'row'}}>
                                 <VoteComponent type={"answer"} id={answer.answer_id} vote_count={answer.upvotes-answer.downvotes}/>
                                 <div className="answer-div" dangerouslySetInnerHTML={{__html:answer.answer}}/>

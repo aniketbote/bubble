@@ -1,21 +1,20 @@
-.blogPageContainer{
-    display: flex;
-    height: 100%;
-}
 
 .content-column{
     display: flex;
     flex-direction: column;
     flex-grow:2;
     padding: 10px;
-    overflow: auto;
+}
+.left-column{
+    /* border: 1px solid violet; */
+    width: calc(100% - 300px) !important;
+    /* max-width: calc(100% - 250px); */
 }
 
 .right-column{
     flex-grow: 1;
-    min-width:250px;
-    max-width:250px;
-    overflow: auto;
+    min-width:300px !important;
+    max-width:300px !important;
 }
 
 .blogPageContainer .horizontal-line{
@@ -35,6 +34,9 @@
     max-width:100% !important;
     margin-bottom:20px !important;
     padding: 5px !important;
+    width: 100% !important;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 .time-text{
     color: gray;

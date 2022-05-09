@@ -10,7 +10,7 @@ const AnswerEditor= ({answers,setAnswers,question_id})=>{
     useEffect(()=>{
         if(content.replace( /(<([^>]+)>)/ig, '')
         .replace(/&nbsp;/gi,'')
-        .replace(/\s/g ,'').length < 100 ){
+        .replace(/\s/g ,'').length < 20 ){
             setDisableBtn(true)
         }
         else{
@@ -21,7 +21,7 @@ const AnswerEditor= ({answers,setAnswers,question_id})=>{
    const postAnswer = ()=>{
         if(content.replace( /(<([^>]+)>)/ig, '')
                   .replace(/&nbsp;/gi,'')
-                  .replace(/\s/g ,'').length < 100 ){return ;}
+                  .replace(/\s/g ,'').length < 20 ){return ;}
         const data={
                 username: session.idToken.payload.preferred_username,
                 user_id: session.idToken.payload.sub,
@@ -59,7 +59,7 @@ const AnswerEditor= ({answers,setAnswers,question_id})=>{
             <h3 style={{margin:'15px',paddingTop:'15px'}}>Your Answer</h3>
             <RichTextEditor reset={reset} setContent={setContent} height={300}/>
             <div style={{display:'flex'}}>
-                <p style={{margin:'-10px 12px',paddingTop:'',background:'#FFFFE0',color:'#FF726F'}}>* Length of the answer must be at least 100 alphanumeric characters to submit the answer.</p>
+                <p style={{margin:'-10px 12px',paddingTop:'',background:'#FFFFE0',color:'#FF726F'}}>* Length of the answer must be at least 20 alphanumeric characters to submit the answer.</p>
             </div>
             <div style={{display:'flex',justifyContent:'right'}}>
                 <Button disabled={disableBtn} onClick={postAnswer} style={{fontSize:'16px',margin:'-10px 10px 10px 5px'}} variant="contained">Submit</Button>

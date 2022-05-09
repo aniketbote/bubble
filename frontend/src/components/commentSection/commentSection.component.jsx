@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import './commentSection.style.css';
 import timeDifference from "../../helper/time-difference";
 import CommentEditor from "../commentEditor/commentEditor.component";
+import { IconButton } from "@mui/material";
+import { AccountContext } from "../../Account/Account.context";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const CommentSection = ({answer_id,question_id,blog_id,comment_ids}) =>{
     const [comments,setComments] = useState([]);
+    const {session} = useContext(AccountContext);
+    const user_id = session.idToken.payload.sub;
+
     useEffect(()=>{
         if ( comment_ids.length > 0)
         {
@@ -35,7 +41,16 @@ const CommentSection = ({answer_id,question_id,blog_id,comment_ids}) =>{
                     return(
                         <div className="comment-outer" key={comment.comment_id}>
                             <div className="horizontal-line-1"/>
-                            <div className="comment-div" dangerouslySetInnerHTML={{__html:  `<p> ${comment.comment_content} ${x} </p> `  }} />
+                              <div style={{display:'flex',flexDirection:'row'}}>
+                                  <div style={{flexGrow:1}} className="comment-div" dangerouslySetInnerHTML={{__html:  `<p> ${comment.comment_content} ${x} </p> `  }} />
+                                  {user_id===comment.user_id?
+                                  <div>
+                                    <IconButton title='Delete'>
+                                        <DeleteIcon style={{color:'#E7625F'}} fontSize='medium'/>
+                                    </IconButton>
+                                  </div>
+                                  :null}
+                              </div>
                             <div style={{display:'flex',justifyContent:'right'}}> 
                             </div>
                         </div>

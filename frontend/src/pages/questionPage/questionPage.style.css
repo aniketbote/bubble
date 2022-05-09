@@ -1,13 +1,11 @@
-.questionPageContainer{
-    display: flex;
-    height: 100%;
-}
 
 .content-column{
     display: flex;
     flex-direction: column;
     flex-grow:2;
     padding: 10px;
+    min-height: 100% ;
+    overflow:hidden
 }
 .left-column{
     /* border: 1px solid violet; */

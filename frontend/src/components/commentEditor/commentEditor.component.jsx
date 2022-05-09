@@ -12,7 +12,7 @@ const CommentEditor = ({question_id,answer_id,blog_id,comments,setComments})=>{
     useEffect(()=>{
         if(content.replace( /(<([^>]+)>)/ig, '')
         .replace(/&nbsp;/gi,'')
-        .replace(/\s/g ,'').length < 80 ){
+        .replace(/\s/g ,'').length < 10 ){
             setDisableBtn(true)
         }
         else{
@@ -25,7 +25,7 @@ const CommentEditor = ({question_id,answer_id,blog_id,comments,setComments})=>{
     const post_comment = () =>{
         if(content.replace( /(<([^>]+)>)/ig, '')
                   .replace(/&nbsp;/gi,'')
-                  .replace(/\s/g ,'').length < 80 ){return ;}
+                  .replace(/\s/g ,'').length < 10 ){return ;}
 
         var data={
             username: session.idToken.payload.preferred_username,
@@ -72,7 +72,7 @@ const CommentEditor = ({question_id,answer_id,blog_id,comments,setComments})=>{
         {showCommentEditor?<>
             <RichPlainTextEditor reset={reset}  setContent={setContent}  height={100}/>
             <div style={{display:'flex'}}>
-                <p style={{margin:'-10px 0px',paddingTop:'',background:'#FFFFE0',color:'#FF726F'}}>* Length of the comment must be at least 80 alphanumeric characters to submit the comment.</p>
+                <p style={{margin:'-10px 0px',paddingTop:'',background:'#FFFFE0',color:'#FF726F'}}>* Length of the comment must be at least 10 alphanumeric characters to submit the comment.</p>
             </div>
             <div style={{display:'flex',justifyContent:'right'}}>
                 <Button disabled={disableBtn} onClick={post_comment} style={{fontSize:'12px',marginTop:'-10px'}} variant="contained">Submit</Button>

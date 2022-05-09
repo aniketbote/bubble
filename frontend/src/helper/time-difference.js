@@ -1,5 +1,6 @@
 export default function timeDifference(timeStamp){
-    const timeDiff = parseInt((Date.now() - new Date(timeStamp))/1000)
+    
+    const timeDiff = parseInt((Date.now()- new Date(timeStamp))/1000) + 14400;
     if(timeDiff <=  (119)){
         return 'just now';
     }
