@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AccountContext } from '../../Account/Account.context';
 import './vote.style.css';
 
-const VoteComponent = ({vote_count,type,id})=>{
+const VoteComponent = ({vote_count,type,id,voteDisable})=>{
     const {session} = useContext(AccountContext);
     const [voted,setVoted]= useState(0);
     const [vote_cnt,setVoteCnt]= useState(vote_count);
@@ -75,11 +75,11 @@ const VoteComponent = ({vote_count,type,id})=>{
     };
 
     return <div style={{display:'flex',flexDirection:'column',minWidth:'60px',marginLeft:'-12px'}}>
-        <IconButton onClick={upvote}>
+        <IconButton disabled={voteDisable} onClick={upvote}>
             <KeyboardArrowUpIcon style={voted===1?{color:'#00b300'}:{}} className="icon-display" fontSize='large'/>
         </IconButton>
         <div className='vote-count' > <p>{vote_cnt}</p> </div>
-        <IconButton onClick={downvote} style={{marginTop:'-20%'}}>
+        <IconButton disabled={voteDisable} onClick={downvote} style={{marginTop:'-20%'}}>
             <KeyboardArrowDownIcon  style={voted===-1?{color:'#ff4d4d'}:{}} className="icon-display"  fontSize='large'/>
         </IconButton>
         </div>

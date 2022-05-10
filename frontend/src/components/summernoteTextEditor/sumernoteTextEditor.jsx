@@ -24,7 +24,8 @@ class RichTextEditor extends Component {
       viewImageUpload: false,
       imageTextField:'',
       className: 'class_'+uuid(),
-      id: 'id_'+uuid()
+      id: 'id_'+uuid(),
+      insertEdit:true
     };
   }
 
@@ -67,7 +68,17 @@ class RichTextEditor extends Component {
     if(this.props.reset){
       this.editArea.innerHTML = '';
       this.props.setContent('');
+      if(!this.state.insertEdit)
+        this.setState({insertEdit:true});
     }
+    if(this.state.insertEdit){
+      if(Object.keys(this.props.answerToEdit).length>0){
+        this.editArea.innerHTML=this.props.answerToEdit.answer;
+        this.props.setContent(this.props.answerToEdit.answer);
+        this.setState({insertEdit:false});
+      }
+    }
+
   }
 
   componentDidMount(){
@@ -77,8 +88,9 @@ class RichTextEditor extends Component {
     button.classList=["note-btn btn btn-default btn-sm"];
     button.onclick =  ()=>{this.setState({ viewImageUpload: true})};
     toolBar.appendChild(button);
-    this.editArea=document.querySelector(`.${this.state.className} .note-editable`)
-    this.editArea.innerHTML='';
+    this.editArea=document.querySelector(`.${this.state.className} .note-editable`);
+
+
     this.ImageUpload = <Paper elevation={6} tabIndex="1" className='insert-upload-image'>
                     <div className="flex-container">
                       <div className='row-one'>

@@ -31,6 +31,35 @@ const CommentSection = ({answer_id,question_id,blog_id,comment_ids}) =>{
         }
 
     },[comment_ids])
+
+    const onDelete = (comment)=>{
+        const data ={
+            user_id: user_id,
+            comment_id: comment.comment_id
+          }
+          if(question_id!==undefined){
+            data.parent_id = question_id;
+            data.parent = 'question';
+          } else if(answer_id!==undefined){
+            data.answer_id = answer_id;
+            data.parent = 'answer';      
+          } else if(blog_id!==undefined){
+            data.blog_id = blog_id;
+            data.parent = 'blog';
+          }
+
+          fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/delete',{
+              method:'POST', 
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Access-Control-Allow-Origin':'*'
+                },
+              body: JSON.stringify(data)
+              })
+              .then(response => response.json())
+              .then(() => {setComments(comments.filter((com)=>com!==comment))})
+              .catch(err=>{console.log(err)})
+    }
     return(
         <>
             <div style={{padding:'10px 10px 10px 10px'}}>
@@ -45,7 +74,7 @@ const CommentSection = ({answer_id,question_id,blog_id,comment_ids}) =>{
                                   <div style={{flexGrow:1}} className="comment-div" dangerouslySetInnerHTML={{__html:  `<p> ${comment.comment_content} ${x} </p> `  }} />
                                   {user_id===comment.user_id?
                                   <div>
-                                    <IconButton title='Delete'>
+                                    <IconButton title='Delete' onClick={()=>{onDelete(comment)}}>
                                         <DeleteIcon style={{color:'#E7625F'}} fontSize='medium'/>
                                     </IconButton>
                                   </div>

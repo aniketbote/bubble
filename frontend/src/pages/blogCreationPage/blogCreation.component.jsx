@@ -3,7 +3,7 @@ import { alpha, styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import InputLabel from '@mui/material/InputLabel';
 import Chip from '@mui/material/Chip';
-import {Grid} from '@mui/material';
+import {Autocomplete, Grid, TextField} from '@mui/material';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import DOMPurify from 'dompurify';
@@ -52,6 +52,7 @@ const BlogCreationPage = ()=>{
     const [content,setContent] = useState('');
     const [tags,setTags] = useState([]);
     const [tagText,setTagText] = useState('');
+    const [apiTagsList,setApiTagsList] = useState([]);
 
     const handleKeyDown = (e) => {
       if (e.key === 'Enter') {
@@ -63,6 +64,20 @@ const BlogCreationPage = ()=>{
     const handleDelete = (key) => {
      setTags(tags.filter(item => item !== key));
     };
+
+    const addTag = (value)=>{
+      const tagTextValue = value;
+      if(value!==null){
+        setTags([...new Set([...tags, ...tagTextValue.split(/[,;]+/)].map(x=>x.toLowerCase()))]);
+      }
+      console.log(document.querySelector('#combo-box-question').value)
+      setTagText('');
+    };
+    const makeTagsApiCall = (val)=>{
+      fetch('https://api.stackexchange.com/2.3/tags?pagesize=10&order=desc&sort=popular&site=stackoverflow&inname='+val.toLowerCase())
+          .then(response=>response.json())
+          .then(data=> setApiTagsList(data.items.map(x=>x.name)))
+    }
 
     return (
             <div style={{display:'flex',flexDirection:'column',marginTop:'15px'}}>                    
@@ -87,7 +102,16 @@ const BlogCreationPage = ()=>{
                     </InputLabel>
                 </div>
                 <div style={{marginLeft:'10px',marginBottom:'10px'}}> 
-                        <BootstrapInput value={tagText}  onKeyDown={handleKeyDown} onChange={(e)=>{setTagText(e.target.value)}} placeholder='Enter comma( , ) separated tags.'/>
+
+                  <Autocomplete
+                    disablePortal
+                    size={"large"}
+                    id="combo-box-question"
+                    options={apiTagsList}
+                    sx={{ width: 300 }}
+                    onChange={( _ , value ) => addTag(value)}
+                    renderInput={(params) => <TextField {...params} variant='filled' value={tagText}  onChange={(e)=>{setTagText(e.target.value);makeTagsApiCall(e.target.value)}}  onKeyDown={handleKeyDown}  label="Tags" />}
+                />      
                 </div>
                 <div style={{marginLeft:'10px'}}> 
                   <Grid container spacing={1}>

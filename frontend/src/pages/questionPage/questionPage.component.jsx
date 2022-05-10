@@ -50,7 +50,7 @@ const QuestionPage = ()=>{
                     <div className='horizontal-line' />
                     <Paper style={{padding:'20px',flexGrow:1}} elevation={4}> 
                         <div style={{display:'flex',flexDirection:'row'}}>
-                            {data.upvotes!==undefined?<VoteComponent type={"question"} id={data.question_id} vote_count={data.upvotes-data.downvotes}/>:null}
+                            {data.upvotes!==undefined?<VoteComponent voteDisable={user_id===data.user_id} type={"question"} id={data.question_id} vote_count={data.upvotes-data.downvotes}/>:null}
                             <div className='description-div' dangerouslySetInnerHTML={{__html:data.question_description}}></div>
                         </div>
                         <Grid container spacing={1}>
