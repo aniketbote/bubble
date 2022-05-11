@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
 import './relatedQuestions.style.scss';
+import { CircularProgress } from "@mui/material";
 
 const RelatedQuestions = ({question_id}) =>{
     const [questions,setQuestions] = useState([]);
@@ -16,6 +17,10 @@ const RelatedQuestions = ({question_id}) =>{
             .then(response => response.json())
             .then(data => {console.log(data) ; setQuestions(data)})
     },[question_id])
+    
+    if(questions.length<1)
+        return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
+
         
     return <div className="related-questions-div">
                 <p className='header' >Related Questions</p>

@@ -1,6 +1,6 @@
 import './blogPage.style.css';
 import { useEffect, useState,useContext } from 'react';
-import { Chip, Grid, IconButton, Paper } from '@mui/material';
+import { Chip, CircularProgress, Grid, IconButton, Paper } from '@mui/material';
 import timeDifference from '../../helper/time-difference'
 import { AccountContext } from '../../Account/Account.context';
 import CommentSection from '../../components/commentSection/commentSection.component';
@@ -26,7 +26,10 @@ const BlogPage = ()=>{
             .then(response => response.json())
             .then(data => {console.log(data); setData(data)})
     },[blog_id])
-    
+
+    if(data.blog_content===undefined)
+        return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
+        
     return (
 
         <div className='content-column'>

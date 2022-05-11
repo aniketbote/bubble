@@ -2,7 +2,7 @@ import './blogList.style.css';
 import SearchBar from '../../components/search/search.component';
 import BlogCard from '../../components/blogCard/blogCard.component';
 import { useEffect, useState } from 'react';
-import { Button, Pagination } from '@mui/material';
+import { Button, CircularProgress, Pagination } from '@mui/material';
 import { useNavigate } from 'react-router';
 
 const BlogListPage = () => {
@@ -32,7 +32,7 @@ const BlogListPage = () => {
                     container.scrollTop = 0 ;
                 }
             }})
-    },[start,forceLoad])
+    },[start,forceLoad,container])
 
     const get_search_results = ()=>{
         if(searchString!==''){
@@ -78,6 +78,10 @@ const BlogListPage = () => {
             </div>
         )
     }
+
+    if(blogs.length<1)
+         return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
+
 
     return (
         <>

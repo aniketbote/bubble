@@ -19,8 +19,8 @@ export const ButtonMenu = () => {
   const buttons = [
     <ToggleButton onClick={()=>{ navigate('/')}}  value="home" className='gray-button' key="home">Home</ToggleButton>,
     <ToggleButton onClick={()=>{ navigate('/questions')}}  value="questions" className='gray-button' key="question">Questions</ToggleButton>,
-    <ToggleButton  onClick={()=>{ navigate('/blogs')}}  value="blogs" className='gray-button' key="blog">Blogs</ToggleButton>,
-    <ToggleButton  value="FAP" className='gray-button' key="professor">Find a professor</ToggleButton>,
+    <ToggleButton onClick={()=>{ navigate('/blogs')}}  value="blogs" className='gray-button' key="blog">Blogs</ToggleButton>,
+    <ToggleButton onClick={()=>{ navigate('/find_a_professor')}}  value="FAP" className='gray-button' key="professor">Find a professor</ToggleButton>,
   ];
 
   const handleChange = (event, nextView) => {

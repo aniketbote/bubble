@@ -84,8 +84,8 @@ const CommentSection = ({answer_id,question_id,blog_id,comment_ids}) =>{
                             </div>
                         </div>
                     )})}
-        </div>
-        <CommentEditor comments={comments} setComments={setComments} question_id={question_id} answer_id={answer_id} blog_id={blog_id}/>
+            </div>
+            <CommentEditor comments={comments} setComments={setComments} question_id={question_id} answer_id={answer_id} blog_id={blog_id}/>
         </>
         )
 }

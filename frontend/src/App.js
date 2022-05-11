@@ -13,6 +13,8 @@ import QuestionPage from './pages/questionPage/questionPage.component';
 import BlogPage from './pages/blogPage/blogPage.component';
 import QuestionListPage from './pages/questionsListPage/questionsList.component';
 import BlogListPage from './pages/blogListPage/blogList.component';
+import FAPPage from './pages/findAProfessor/findAProfessor.component';
+import ProfessorPage from './pages/professorPage/professorPage.component';
 
 function App() {
   
@@ -39,6 +41,8 @@ function App() {
             <Route exact path="home" element={<HomePage/>}/>
             <Route exact path="questions" element={<QuestionListPage/>}/>
             <Route exact path="blogs" element={<BlogListPage/>}/>
+            <Route exact path="find_a_professor" element={<FAPPage/>}/>
+            <Route exact path="professor/:id" element={<ProfessorPage/>}/>
           </Route>
           <Route exact  path="/login" element={!userStatus?<LoginSignupPage/>:<Navigate replace to="/"/>}/>
           <Route  path="*" element={<ErrorPage/>}/>

@@ -1,6 +1,6 @@
 import './questionPage.style.css';
 import { useEffect, useState, useContext } from 'react';
-import { Chip, Grid, IconButton, Paper } from '@mui/material';
+import { Chip, CircularProgress, Grid, IconButton, Paper } from '@mui/material';
 import timeDifference from '../../helper/time-difference'
 import AnswerSection from '../../components/answerSection/answerSection.component'
 import CommentSection from '../../components/commentSection/commentSection.component';
@@ -14,8 +14,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 const QuestionPage = ()=>{
     const {session} = useContext(AccountContext);
     const user_id = session.idToken.payload.sub;
-    const [data,setData] = useState({})
-    const {question_id} =useParams()
+    const [data,setData] = useState({});
+    const {question_id} =useParams();
+
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_question',{
             method:'POST',
@@ -29,6 +30,10 @@ const QuestionPage = ()=>{
             .then(data => { console.log(data) ; setData(data)})
     },[question_id])
     
+
+    if(data.question_description===undefined)
+        return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
+        
     return (
         <div className='content-column'>
             <div style={{display:'flex',flexDirection:'row',flexGrow:1}}>

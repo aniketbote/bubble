@@ -2,7 +2,7 @@ import './homepage.style.css';
 import SearchBar from '../../components/search/search.component';
 import QuestionCard from '../../components/questionCard/questionCard.component';
 import { useEffect, useState } from 'react';
-import { Button, Pagination } from '@mui/material';
+import { Button, CircularProgress, Pagination } from '@mui/material';
 import { useNavigate } from 'react-router';
 import BlogCard from '../../components/blogCard/blogCard.component';
 
@@ -33,7 +33,7 @@ const QuestionListPage = () => {
                     container.scrollTop = 0 ;
                 }
             }})
-    },[start,forceLoad])
+    },[start,forceLoad,container])
 
     const get_search_results = ()=>{
         if(searchString!==''){
@@ -79,6 +79,9 @@ const QuestionListPage = () => {
             </div>
         )
     }
+    if(content.length<1)
+         return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
+
 
     return (
         <>
@@ -107,7 +110,7 @@ const QuestionListPage = () => {
                                 })}
                 </div>
                 <div style={{padding:'20px 0px'}}>
-                         {content.length>0 && !searched ?<Pagination onChange={(_,val)=>{setStart(val-1)}}  color='primary' count={start+5} size="large"/>:<></>}
+                         {content.length>0 && !searched ?<Pagination onChange={(_,val)=>{ setStart(val-1)}}  color='primary' count={start+5} size="large"/>:<></>}
                 </div>
             </div>
         </>

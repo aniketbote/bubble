@@ -1,0 +1,63 @@
+.professor-div{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.professor-col-div{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.professor-name-header{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: 600;
+}
+
+.professor-rating{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.professor-rating-count{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.professor-details-box{
+    padding:30px 50px;
+    margin-top:20px;
+    border-radius: 10px;
+    max-height: 400px;
+    max-width: 600px;
+    width: 80%;
+}
+.rating_type{
+    font-size:15px;
+    margin-top:-3px;
+    font-weight:550;
+    color: grey;
+    min-width: 80px;
+    
+}
+.rating_percent{
+    font-size:15px;
+    margin-top:-3px;
+    color: gray;
+    min-width: 60px;
+}
+
+.chip-text{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 12px;
+}
+
+.reviewText{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    height:200px;
+    background:#FFF;
+    border: 1px solid rgb(167, 165, 165);
+    border-radius: 5px;
+    overflow: auto;
+}
