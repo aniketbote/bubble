@@ -1,0 +1,9 @@
+.professor-review-label{
+    margin-top:8px;
+    min-width:100px
+}
+.professor-review-item{
+    display:flex;
+    flex-direction: row;
+    padding-top: 20px;
+}

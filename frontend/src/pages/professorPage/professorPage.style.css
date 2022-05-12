@@ -24,10 +24,10 @@
 }
 
 .professor-details-box{
-    padding:30px 50px;
+    padding:30px 50px 40px 50px;
     margin-top:20px;
     border-radius: 10px;
-    max-height: 400px;
+    max-height: 500px;
     max-width: 600px;
     width: 80%;
 }
@@ -55,9 +55,13 @@
     width:100%;
     padding:10px;
     margin-top:10px;
-    height:200px;
+    height:150px;
     background:#FFF;
     border: 1px solid rgb(167, 165, 165);
     border-radius: 5px;
     overflow: auto;
+}
+
+#review-editor-area{
+    margin: 0px 20px 20px 20px;
 }

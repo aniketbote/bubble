@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {Chip, Grid, Paper} from '@mui/material';
+import {Chip, Grid, Paper, IconButton, Button} from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import './professorPage.style.css'
+import DeleteIcon from '@mui/icons-material/Delete';
+import { AccountContext } from "../../Account/Account.context";
+import timeDifference from "../../helper/time-difference";
+import ProfessorReviewEditor from "../../components/professorReviewEditor/professorReviewEditor.component";
+
 const ProfessorPage = ()=>{
     const {id} = useParams('id');
     const [professor,setProfessor] = useState({});
@@ -13,6 +18,10 @@ const ProfessorPage = ()=>{
     const [attendance,setAttendance] = useState(null);
     const [forCredit,setForCredit] = useState(null);
     const [online,setOnline] = useState(null);
+    const [reviewEditorVisible,setReviewEditorVisible] = useState(false);
+    const [userHasReviewed,setUserHasReviewed] = useState(false);
+    const {session} = useContext(AccountContext);
+    const user_id = session.idToken.payload.sub;
 
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_professor',{
@@ -26,7 +35,6 @@ const ProfessorPage = ()=>{
         .then(response=>response.json())
         .then(response=>{
                 setProfessor(response);
-                console.log(response);
                 fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_reviews',{
                     method:'POST',
                     headers: {
@@ -36,7 +44,7 @@ const ProfessorPage = ()=>{
                     body:JSON.stringify({review_ids:response.reviews})
                 })
                 .then(response=>response.json())
-                .then(response=>{setReview(response);console.log(response)})
+                .then(response=>{setReview(response)})
             })
     },[id])
 
@@ -48,24 +56,44 @@ const ProfessorPage = ()=>{
             setAttendance(mode(reviews.map(review => review.attendance)))
             setOnline(mode(reviews.map(review => review.online)))
             setForCredit(mode(reviews.map(review => review.for_credit)))
+            reviews.every(review=>{
+                if(review.user_id===user_id){
+                   setUserHasReviewed(true);
+                   return false;
+                }
+                return true;
+            })
         }
-    
+    },[reviews,professor.num_ratings,user_id])
 
-    },[reviews])
     if(professor.num_ratings!==0){
-        var awful_percent   = professor.rating_type_counts!==undefined?round(professor.rating_type_counts.awful_count/professor.num_ratings*100,2):0;
-        var awesome_percent = professor.rating_type_counts!==undefined?round(professor.rating_type_counts.awesome_count/professor.num_ratings*100,2):0;
-        var average_percent = professor.rating_type_counts!==undefined?round(professor.rating_type_counts.average_count/professor.num_ratings*100,2):0;
+        var awful_percent   = professor.rating_type_counts!==undefined?roundInt(professor.rating_type_counts.awful_count/professor.num_ratings*100,2):0;
+        var awesome_percent = professor.rating_type_counts!==undefined?roundInt(professor.rating_type_counts.awesome_count/professor.num_ratings*100,2):0;
+        var average_percent = professor.rating_type_counts!==undefined?roundInt(professor.rating_type_counts.average_count/professor.num_ratings*100,2):0;
     }
     else{
         awful_percent   = 0;
         awesome_percent = 0;
         average_percent = 0;
     }
+    const onReviewButtonClick = ()=>{
+        setReviewEditorVisible(true);
+        setTimeout(() => {
+            document.getElementById('review-editor-area').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'center'});
+        }, 100);
+    }
     
 
     return professor?<div className="professor-div">
             <div  className="professor-div">
+            {!userHasReviewed?
+                    <div style={{display:'flex',flexDirection:'row'}}>
+                        <div style={{flexGrow:1}}/>
+                        <Button onClick={()=>{onReviewButtonClick()}} style={{fontSize:'16px',margin:'10px'}}>Write A Review</Button> 
+                         </div>:null}
                 <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center'}}>
                     <Paper elevation={5} className="professor-details-box">
                         <h2 className="professor-rating">{professor.total_rating!==0?round(professor.total_rating/professor.num_ratings,1)+'/5.0':'N/A'}  </h2>
@@ -125,8 +153,8 @@ const ProfessorPage = ()=>{
                     </Paper>
                 </div>
             </div>
+            {professor.num_ratings>0?<h3 style={{margin:'10px 50px -20px 50px', padding:'20px 0px'}}>Review count: {professor.num_ratings}</h3>:null}
                 <Paper elevation={6} style={{margin:'20px'}}>
-                    {professor.num_ratings>0?<h3 style={{margin:'10px 50px',padding:'20px 0px'}}>Review count: {professor.num_ratings}</h3>:null}
                     <div style={{flexGrow:3}} className="professor-div">
                         <div style={{justifyContent:'center'}} className="professor-col-div">
                             <div style={{width:'100%'}}>
@@ -142,7 +170,15 @@ const ProfessorPage = ()=>{
                                         color1='#B7E9F7';
                                         color2='#E9FAFF';
                                     }
-                                    return <Paper key={review.review_id} style={{margin:'10px 50px',padding:'10px',background: color2}} elevation={5}>
+                                    return professor.num_ratings>0?
+                                            <Paper key={review.review_id} style={{margin:'30px 50px',padding:'10px',background: color2}} elevation={5}>
+                                                {user_id===review.user_id?
+                                                    <div style={{display:'flex',flexDirection:'row'}}>
+                                                        <div style={{flexGrow:1}}/>
+                                                        <IconButton title='Delete'>
+                                                            <DeleteIcon style={{color:'#E7625F'}} fontSize='large'/>
+                                                        </IconButton>
+                                                    </div>:null}
                                                 <Grid container spacing={1}>
                                                     <Grid item >   
                                                         <Chip style={{background: color1}} label={<span className="chip-text"><span style={{fontWeight:600}}>{review.tags}</span></span>}/>
@@ -176,23 +212,31 @@ const ProfessorPage = ()=>{
                                                     </Grid>
                                                 </Grid>
                                                 <div className="reviewText" ><p>{review.review}</p></div>
-                                            </Paper>
+                                                <div style={{display:'flex',flexDirection:'row'}}>
+                                                    <div style={{flexGrow:1}}/>
+                                                    <p style={{marginBottom:'-5px',marginTop:'3px'}} className="time-text">Posted {timeDifference(review.timestamp)}. </p>
+                                                </div>
+                                            </Paper>:<></>
                                     })
                                 }
                             </div>
                         </div>
                     </div>
                 </Paper>
+                {reviewEditorVisible?<Paper elevation={6} id='review-editor-area'> 
+                                <ProfessorReviewEditor professor_name={professor.first_name+' '+professor.last_name}/>
+                </Paper>:null}
     </div>:<></>
 }
 export default ProfessorPage;
 
 
 function round(value, precision) {
-    var multiplier = Math.pow(10, precision || 0);
-    return Math.round(value * multiplier) / multiplier;
+    return value.toFixed(precision);
 }
-
+function roundInt(value, precision) {
+    return parseInt(value.toFixed(precision));
+}
 function mode(arr){
     return arr.sort((a,b) =>
           arr.filter(v => v===a).length
