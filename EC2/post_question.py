@@ -23,21 +23,21 @@ import sys
 from boto3.dynamodb.types import TypeSerializer
 import six
 
-client = boto3.client('dynamodb', aws_access_key_id="****",
-						  aws_secret_access_key="****", region_name= 'us-east-1')
+client = boto3.client('dynamodb', aws_access_key_id="AKIA2DHJUBNXY7BMXBOI",
+						  aws_secret_access_key="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", region_name= 'us-east-1')
 
 dynamodb = boto3.resource(service_name='dynamodb',
-						  aws_access_key_id="****",
-						  aws_secret_access_key="****",
+						  aws_access_key_id="AKIA2DHJUBNXY7BMXBOI",
+						  aws_secret_access_key="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",
 						  region_name="us-east-1",
 						  endpoint_url="http://dynamodb.us-east-1.amazonaws.com")
 table1 = dynamodb.Table('questions-db')
 table2 = dynamodb.Table('user-activity-db')
 
-host = 'open search host url'
+host = 'https://search-bubble-domain-rfgwnz5ocgakgdb44rflkimdbi.us-east-1.es.amazonaws.com'
 
-master_user = '****'
-master_password = 'password****'
+master_user = 'admin'
+master_password = 'Admin@12345'
 
 
 def findimagesrc(data):
@@ -84,39 +84,31 @@ def post_question(event, model):
 	if 'question_id' not in event.keys():
 		reponse = create_new(create_question, event)
 	else:
-		reponse = create_edit(event)
+		reponse = create_edit(event, create_question)
 	return reponse
 
 def imageSQSRequest(requestData, questionid, userid):
 	
 
-	sqs = boto3.client('sqs', aws_access_key_id="****", 
-						aws_secret_access_key="****", region_name= 'us-east-1', endpoint_url="****")
+	sqs = boto3.client('sqs', aws_access_key_id="AKIA2DHJUBNXY7BMXBOI", 
+						aws_secret_access_key="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", region_name= 'us-east-1', endpoint_url="https://sqs.us-east-1.amazonaws.com/694127168367/Q1")
 	
+	# sqs = boto3.resource(service_name='sqs',
+	#                       aws_access_key_id="AKIA2DHJUBNXY7BMXBOI",
+	#                       aws_secret_access_key="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",
+	#                       region_name="us-east-1",
+	#                       endpoint_url="https://sqs.us-east-1.amazonaws.com/694127168367/Q1")
 
-
-	queue_url = "****"
+	queue_url = "https://sqs.us-east-1.amazonaws.com/694127168367/Q1"
 	messageAttributes = {
-		'question_id': {
-			'DataType': 'String',
-			'StringValue': questionid
-		},
-		'image_urls': {
-			'DataType': 'String',
-			'StringValue': requestData
-		},
-		'user_id':{
-			'DataType': 'String',
-			'StringValue': userid
-		},
-		'primary_key': {
-			'DataType': 'String',
-			'StringValue': questionid
-		}
+		"question_id": questionid ,
+		"image_urls": requestData ,
+		"user_id": userid ,
+		"pkey": questionid
 	}
-	messageBody=(messageAttributes)
+	#messageBody=(messageAttributes)
 	
-	response = sqs.send_message(QueueUrl = queue_url, MessageBody = str(messageBody))
+	response = sqs.send_message(QueueUrl = queue_url, MessageBody = json.dumps(messageAttributes))
 	
 	return response
 
@@ -162,7 +154,7 @@ def create_new(create_question, event):
 	
 	return {"status": 200,"message":"Task completed",'body': json.dumps('Inserted into bubble-domain'), "question_id":create_question["question_id"], "timestamp":create_question["timestamp"]}   
 
-def create_edit(event):
+def create_edit(event, create_question):
 	try:
 		edit_time = str(datetime.now()).split('.')[0]
 		response = client.transact_write_items(
@@ -173,10 +165,11 @@ def create_edit(event):
 						"Key":{
 							"question_id":{"S":event["question_id"]}
 						},
-						"UpdateExpression": "SET question_description = :new_question_description, question_title = :new_question_title, edited = :edit_bool, edited_timestamp = :edit_time",
+						"UpdateExpression": "SET question_description = :new_question_description, question_title = :new_question_title, edited = :edit_bool, edited_timestamp = :edit_time, image_urls = :new_image_urls",
 						"ExpressionAttributeValues":{
 							":new_question_description": {"S":event['question_description']},
 							":new_question_title": {"S":event['question_title']},
+							":new_image_urls" : create_question["image_urls"],
 							":edit_bool": {"BOOL": True},
 							":edit_time": {"S":edit_time}
 						}

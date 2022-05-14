@@ -22,21 +22,21 @@ import sys
 from boto3.dynamodb.types import TypeSerializer
 import six
 
-client = boto3.client('dynamodb', aws_access_key_id="****", 
-                        aws_secret_access_key="****", region_name= 'us-east-1')
+client = boto3.client('dynamodb', aws_access_key_id="AKIA2DHJUBNXY7BMXBOI", 
+                        aws_secret_access_key="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", region_name= 'us-east-1')
 
 dynamodb = boto3.resource(service_name='dynamodb',
-                          aws_access_key_id="****",
-                          aws_secret_access_key="****",
+                          aws_access_key_id="AKIA2DHJUBNXY7BMXBOI",
+                          aws_secret_access_key="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",
                           region_name="us-east-1",
                           endpoint_url="http://dynamodb.us-east-1.amazonaws.com")
 table1 = dynamodb.Table('blogs-db')
 table2 = dynamodb.Table('user-activity-db')
 
-host = 'host url'
+host = 'https://search-bubble-domain-rfgwnz5ocgakgdb44rflkimdbi.us-east-1.es.amazonaws.com'
 
-master_user = 'userid'
-master_password = 'password****'
+master_user = 'admin'
+master_password = 'Admin@12345'
 
 WPM = 200
 WORD_LENGTH = 5
@@ -101,40 +101,32 @@ def post_blog(event, model):
     if 'blog_id' not in event.keys():
         reponse = create_new(create_blog, event)
     else:
-        reponse = create_edit(event)
+        reponse = create_edit(event, create_blog)
     return reponse
 
 
 def imageSQSRequest(requestData, blogid, userid):
     
 
-    sqs = boto3.client('sqs', aws_access_key_id="****", 
-                        aws_secret_access_key="****", region_name= 'us-east-1', endpoint_url="put sqs url")
+    sqs = boto3.client('sqs', aws_access_key_id="AKIA2DHJUBNXY7BMXBOI", 
+                        aws_secret_access_key="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", region_name= 'us-east-1', endpoint_url="https://sqs.us-east-1.amazonaws.com/694127168367/Q1")
     
+    # sqs = boto3.resource(service_name='sqs',
+    #                       aws_access_key_id="AKIA2DHJUBNXY7BMXBOI",
+    #                       aws_secret_access_key="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",
+    #                       region_name="us-east-1",
+    #                       endpoint_url="https://sqs.us-east-1.amazonaws.com/694127168367/Q1")
 
-
-    queue_url = "put url of sqs"
+    queue_url = "https://sqs.us-east-1.amazonaws.com/694127168367/Q1"
     messageAttributes = {
-        'blog_id': {
-            'DataType': 'String',
-            'StringValue': blogid
-        },
-        'image_urls': {
-            'DataType': 'String',
-            'StringValue': requestData
-        },
-        'user_id':{
-            'DataType': 'String',
-            'StringValue': userid
-        },
-        'primary_key': {
-            'DataType': 'String',
-            'StringValue': blogid
-        }
+        "blog_id": blogid,
+        "image_urls": requestData,
+        "user_id":userid,
+        "pkey": blogid
     }
-    messageBody=(messageAttributes)
+    #messageBody=(messageAttributes)
 
-    response = sqs.send_message(QueueUrl = queue_url, MessageBody = str(messageBody))
+    response = sqs.send_message(QueueUrl = queue_url, MessageBody = json.dumps(messageAttributes))
     
     return response
 
@@ -181,7 +173,7 @@ def create_new(create_blog, event):
     
     return {"status": 200,"message":"Task completed",'body': json.dumps('Inserted into bubble-domain'), "blog_id":create_blog["blog_id"], "timestamp":create_blog["timestamp"]}
 
-def create_edit(event):
+def create_edit(event, create_blog):
 
     removetag = remove_html_tags(event['blog_content'])
 
@@ -195,10 +187,11 @@ def create_edit(event):
                         "Key":{
                             "blog_id":{"S":event["blog_id"]}
                         },
-                        "UpdateExpression": "SET blog_content = :new_blog_content, blog_title = :new_blog_title, blog_short_description = :new_blog_short_description, edited = :edit_bool, edited_timestamp = :edit_time",
+                        "UpdateExpression": "SET blog_content = :new_blog_content, blog_title = :new_blog_title, blog_short_description = :new_blog_short_description, edited = :edit_bool, edited_timestamp = :edit_time, image_urls = :new_image_urls",
                         "ExpressionAttributeValues":{
                             ":new_blog_content": {"S":event['blog_content']},
                             ":new_blog_title": {"S":event['blog_title']},
+                            ":new_image_urls": create_blog["image_urls"],
                             ":new_blog_short_description": {"S":removetag[:750]},
                             ":edit_bool": {"BOOL": True},
                             ":edit_time": {"S":edit_time}
