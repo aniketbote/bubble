@@ -9,7 +9,8 @@ const BlogLikes = ({vote_count,blog_id,voteDisable})=>{
     const {session} = useContext(AccountContext);
     const [voted,setVoted]= useState(0);
     const [vote_cnt,setVoteCnt]= useState(vote_count);
-    const user_id = session.idToken.payload.sub
+    const user_id = session.idToken.payload.sub;
+    
     useEffect(()=>{
         if(blog_id!==undefined){
             const postfix = "?type=blog&id="+blog_id+"&user_id="+user_id;

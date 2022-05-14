@@ -72,11 +72,28 @@ class RichTextEditor extends Component {
         this.setState({insertEdit:true});
     }
     if(this.state.insertEdit){
-      if(Object.keys(this.props.answerToEdit).length>0){
-        this.editArea.innerHTML=this.props.answerToEdit.answer;
-        this.props.setContent(this.props.answerToEdit.answer);
-        this.setState({insertEdit:false});
+      if(this.props.answerToEdit!==undefined){
+        if(Object.keys(this.props.answerToEdit).length>0){
+          this.editArea.innerHTML=this.props.answerToEdit.answer;
+          this.props.setContent(this.props.answerToEdit.answer);
+          this.setState({insertEdit:false});
+        }
       }
+      if(this.props.questionToEdit!==undefined){
+        if(Object.keys(this.props.questionToEdit).length>0){
+          this.editArea.innerHTML=this.props.questionToEdit.question_description;
+          this.props.setContent(this.props.questionToEdit.question_description);
+          this.setState({insertEdit:false});
+        }
+      }
+      if(this.props.blogToEdit!==undefined){
+        if(Object.keys(this.props.blogToEdit).length>0){
+          this.editArea.innerHTML=this.props.blogToEdit.blog_content;
+          this.props.setContent(this.props.blogToEdit.blog_content);
+          this.setState({insertEdit:false});
+        }
+      }
+
     }
 
   }

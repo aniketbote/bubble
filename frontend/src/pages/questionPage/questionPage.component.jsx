@@ -6,7 +6,7 @@ import AnswerSection from '../../components/answerSection/answerSection.componen
 import CommentSection from '../../components/commentSection/commentSection.component';
 import RelatedQuestions from '../../components/relatedQuestions/relatedQuestions.component';
 import { AccountContext } from "../../Account/Account.context";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import VoteComponent from '../../components/vote/vote.component';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -16,6 +16,7 @@ const QuestionPage = ()=>{
     const user_id = session.idToken.payload.sub;
     const [data,setData] = useState({});
     const {question_id} =useParams();
+    const navigate = useNavigate();
 
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_question',{
@@ -29,7 +30,10 @@ const QuestionPage = ()=>{
             .then(response => response.json())
             .then(data => { console.log(data) ; setData(data)})
     },[question_id])
-    
+
+    const handelEdit = ()=>{
+        navigate('/create_question',{state:data});
+    }
 
     if(data.question_description===undefined)
         return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
@@ -38,10 +42,10 @@ const QuestionPage = ()=>{
         <div className='content-column'>
             <div style={{display:'flex',flexDirection:'row',flexGrow:1}}>
                 <div className='left-column' style={{flexDirection:'column',flexGrow:1}}>
-                    {user_id===data.user_id?
+                    {user_id!==data.user_id?
                     <div style={{display:'flex',flexDirection:'row'}}>
                         <div style={{flexGrow:1}}/>
-                            <IconButton title='Edit'>
+                            <IconButton onClick={handelEdit} title='Edit'>
                                 <EditIcon style={{color:'#003060'}} fontSize='large'/>
                             </IconButton>
                             <IconButton title='Delete'>

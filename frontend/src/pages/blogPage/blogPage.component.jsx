@@ -4,7 +4,7 @@ import { Chip, CircularProgress, Grid, IconButton, Paper } from '@mui/material';
 import timeDifference from '../../helper/time-difference'
 import { AccountContext } from '../../Account/Account.context';
 import CommentSection from '../../components/commentSection/commentSection.component';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BlogLikes from '../../components/blogLikeSection/blogLikeSection.component';
@@ -15,7 +15,8 @@ const BlogPage = ()=>{
     const user_id = session.idToken.payload.sub;
     const [data,setData] = useState({});
     const {blog_id} = useParams();
-    
+    const navigate = useNavigate();
+
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_blog',{
             method:'POST',
@@ -29,6 +30,10 @@ const BlogPage = ()=>{
             .then(data => {console.log(data); setData(data)})
     },[blog_id])
 
+    const handelEdit = ()=>{
+        navigate('/create_blog',{state:data});
+    }
+
     if(data.blog_content===undefined)
         return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
         
@@ -37,11 +42,11 @@ const BlogPage = ()=>{
         <div className='content-column'>
             <div style={{display:'flex',flexDirection:'row',flexGrow:1}}>
             <div className='left-column' style={{flexDirection:'column',flexGrow:1}}>
-            {user_id===data.user_id?
+            {user_id!==data.user_id?
                     <div style={{display:'flex',flexDirection:'row'}}>
                         <div style={{flexGrow:1}}/>
                             <IconButton title='Edit'>
-                                <EditIcon style={{color:'#003060'}} fontSize='large'/>
+                                <EditIcon onClick={handelEdit} style={{color:'#003060'}} fontSize='large'/>
                             </IconButton>
                             <IconButton title='Delete'>
                                 <DeleteIcon style={{color:'#E7625F'}} fontSize='large'/>

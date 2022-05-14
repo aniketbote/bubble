@@ -4,10 +4,12 @@ import InputBase from '@mui/material/InputBase';
 import InputLabel from '@mui/material/InputLabel';
 import Chip from '@mui/material/Chip';
 import {Autocomplete, Grid, TextField} from '@mui/material';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import DOMPurify from 'dompurify';
 import './blogCreation.style.css'
+import { useLocation } from 'react-router-dom';
+import { AccountContext } from '../../Account/Account.context';
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
@@ -53,6 +55,27 @@ const BlogCreationPage = ()=>{
     const [tags,setTags] = useState([]);
     const [tagText,setTagText] = useState('');
     const [apiTagsList,setApiTagsList] = useState([]);
+    const [blogToEdit,setBlogToEdit] = useState({});
+
+    const {session} = useContext(AccountContext);
+    const user_id = session.idToken.payload.sub;
+    const location = useLocation();
+  
+    const {state} = location;
+
+    var data = {
+      user_id: user_id
+    };
+
+    useEffect(()=>{
+      if(state!==null){
+        data.question_id = state.question_id;
+        setContent(state.blog_description);
+        setTitle(state.blog_title);
+        setTags(state.tags);
+        setBlogToEdit(state)
+      }
+    },[state])
 
     const handleKeyDown = (e) => {
       if (e.key === 'Enter') {
@@ -87,14 +110,14 @@ const BlogCreationPage = ()=>{
                     </InputLabel>
                 </div>
                 <div style={{marginLeft:'10px'}}> 
-                        <BootstrapInput onChange={e => setTitle(e.target.value)} placeholder='Title'  /> 
+                        <BootstrapInput value={title} onChange={e => setTitle(e.target.value)} placeholder='Title'  /> 
                 </div>
                 <div style={{display:'flex',marginLeft:'10px',marginTop:'15px'}}> 
                     <InputLabel htmlFor="bootstrap-input">
                         <span style={{fontSize:'16px',fontWeight:'bolder'}}>Body:&nbsp;</span>
                     </InputLabel>
                 </div>
-                <RichTextEditor setContent={setContent} height={400}/>                
+                <RichTextEditor blogToEdit={blogToEdit} setContent={setContent} height={400}/>                
                 {false?<div className='contentDiv' dangerouslySetInnerHTML={{__html:DOMPurify.sanitize(content)}}></div>:null}
                 <div style={{display:'flex',marginLeft:'10px'}}> 
                     <InputLabel htmlFor="bootstrap-input">
