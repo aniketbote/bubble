@@ -2,7 +2,7 @@ import { Chip, FormControl, InputLabel, MenuItem, Select, Slider,Grid, Button } 
 import { useEffect, useState } from "react";
 import RichPlainTextEditor from "../summernotePlainTextEditor/sumernotePlainTextEditor";
 import './professorReviewEditor.style.css';
-const ProfessorReviewEditor = ({user_id,professor_id,professor_name})=>{
+const ProfessorReviewEditor = ({user_id,professor_id,fetchData,professor_name})=>{
 
     const [difficulty, setDifficulty]= useState(3);
     const [quality, setQuality]= useState(3);
@@ -27,6 +27,42 @@ const ProfessorReviewEditor = ({user_id,professor_id,professor_name})=>{
 
     }, [review])
 
+    const handleSubmit = ()=>{
+        const data={
+            professor_id: professor_id,
+            quality: quality,
+            difficulty: difficulty,
+            tags: experience,
+            attendance: attendance,
+            take_again: willTakeAgain,
+            for_credit: forCredit,
+            grade: grade,
+            online: online,
+            rating: rating,
+            review: review.replace( /(<([^>]+)>)/ig, ''),
+            user_id: user_id
+        }
+        fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/post_review',{
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin':'*'
+              },
+            body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                    console.log(data);
+                    fetchData();
+                    setTimeout(() => {
+                        document.getElementById(data.review_id).scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'center',
+                            inline: 'center'});
+                    }, 100);
+                })
+            .catch(err=>{console.log(err)})
+    }
 
     return <div style={{display:'flex', flexDirection:'column',margin:'20px'}}>
                 <p style={{fontSize:'24px',marginBottom:'-5px'}}>Rate: <span style={{fontWeight:'bolder'}}>{professor_name}</span></p>
@@ -103,8 +139,8 @@ const ProfessorReviewEditor = ({user_id,professor_id,professor_name})=>{
                                     <MenuItem value={'A+'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;A+</span></MenuItem>
                                     <MenuItem value={'A'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;A</span></MenuItem>
                                     <MenuItem value={'A-'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;A-</span></MenuItem>
-                                    <MenuItem value={'B+'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;B</span></MenuItem>
-                                    <MenuItem value={'B'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;B+</span></MenuItem>
+                                    <MenuItem value={'B+'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;B+</span></MenuItem>
+                                    <MenuItem value={'B'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;B</span></MenuItem>
                                     <MenuItem value={'B-'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;B-</span></MenuItem>
                                     <MenuItem value={'C'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;C</span></MenuItem>
                                     <MenuItem value={'C-'}><span style={{padding:'5px',fontSize:'12px'}}>&nbsp;C-</span></MenuItem>
@@ -202,7 +238,7 @@ const ProfessorReviewEditor = ({user_id,professor_id,professor_name})=>{
                 <RichPlainTextEditor setContent={setReview} height={200}/>
                 <div style={{display:'flex',flexDirection:'row',flexGrow:1}}>
                     <div style={{flexGrow:1}}/>
-                    <Button disabled={disableBtn} sx={{fontSize:'14px'}} variant="contained">Submit</Button>
+                    <Button onClick={handleSubmit}disabled={disableBtn} sx={{fontSize:'14px'}} variant="contained">Submit</Button>
                 </div>
             </div>
 }

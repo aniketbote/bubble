@@ -69,7 +69,7 @@ const QuestionPage = ()=>{
                     {data.answer_ids!==undefined?<AnswerSection accepted_id={data.accepted_id} question_id={data.question_id} answer_ids={data.answer_ids}/>:null}
                     </div>
                     <Paper elevation={6} className="right-column" >
-                        {data.question_id!==undefined?<RelatedQuestions question_id={data.question_id}/>:null}
+                        {data.question_id!==undefined?<RelatedQuestions question_id={question_id}/>:null}
                     </Paper>
                 </div>
             </div>

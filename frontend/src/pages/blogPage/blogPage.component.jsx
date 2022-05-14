@@ -7,6 +7,8 @@ import CommentSection from '../../components/commentSection/commentSection.compo
 import { useParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import BlogLikes from '../../components/blogLikeSection/blogLikeSection.component';
+import RelatedBlogs from '../../components/relatedBlogs/relatedBlogs';
 
 const BlogPage = ()=>{
     const {session} = useContext(AccountContext);
@@ -58,10 +60,14 @@ const BlogPage = ()=>{
                                 <Chip style={{fontSize:'12px'}} label={key} />
                             </Grid>)):null}
                     </Grid>
+                    <div style={{height:'15px'}}/>
+                    <BlogLikes blog_id={data.blog_id} vote_count={data.upvotes}/>
                     {data.comment_ids!==undefined?<CommentSection blog_id={data.blog_id} comment_ids={data.comment_ids}/>:null}
                 </Paper>
             </div>
-            <Paper elevation={6} className="right-column" ></Paper>
+            <Paper elevation={6} className="right-column" >
+                <RelatedBlogs blog_id={blog_id}/>
+            </Paper>
             </div>
         </div>
     )

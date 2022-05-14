@@ -41,13 +41,13 @@ const CommentSection = ({answer_id,question_id,blog_id,comment_ids}) =>{
             data.parent_id = question_id;
             data.parent = 'question';
           } else if(answer_id!==undefined){
-            data.answer_id = answer_id;
+            data.parent_id = answer_id;
             data.parent = 'answer';      
           } else if(blog_id!==undefined){
-            data.blog_id = blog_id;
+            data.parent_id = blog_id;
             data.parent = 'blog';
           }
-
+          console.log(data)
           fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/delete',{
               method:'POST', 
               headers: {

@@ -34,6 +34,33 @@ const ProfessorPage = ()=>{
         })
         .then(response=>response.json())
         .then(response=>{
+            console.log(response)
+            response.num_ratings = response.reviews.length
+                setProfessor(response);
+                fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_reviews',{
+                    method:'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin':'*'
+                    },
+                    body:JSON.stringify({review_ids:response.reviews})
+                })
+                .then(response=>response.json())
+                .then(response=>{console.log(response);setReview(response)})
+            })
+    },[id])
+
+    const fetchData = ()=>{
+        fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_professor',{
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin':'*'
+            },
+            body:JSON.stringify({professor_id:id})
+        })
+        .then(response=>response.json())
+        .then(response=>{
                 setProfessor(response);
                 fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_reviews',{
                     method:'POST',
@@ -46,7 +73,7 @@ const ProfessorPage = ()=>{
                 .then(response=>response.json())
                 .then(response=>{setReview(response)})
             })
-    },[id])
+    }
 
     useEffect(()=>{
         if(professor.num_ratings>0){
@@ -86,6 +113,10 @@ const ProfessorPage = ()=>{
         }, 100);
     }
     
+    const deleteHandler = (review_id)=>{
+        
+        fetchData();
+    }
 
     return professor?<div className="professor-div">
             <div  className="professor-div">
@@ -171,46 +202,49 @@ const ProfessorPage = ()=>{
                                         color2='#E9FAFF';
                                     }
                                     return professor.num_ratings>0?
-                                            <Paper key={review.review_id} style={{margin:'30px 50px',padding:'10px',background: color2}} elevation={5}>
+                                            <Paper id={review.review_id} key={review.review_id} style={{margin:'30px 50px',padding:'10px',background: color2}} elevation={5}>
                                                 {user_id===review.user_id?
                                                     <div style={{display:'flex',flexDirection:'row'}}>
-                                                        <div style={{flexGrow:1}}/>
-                                                        <IconButton title='Delete'>
-                                                            <DeleteIcon style={{color:'#E7625F'}} fontSize='large'/>
-                                                        </IconButton>
+                                                        <div style={{flexGrow:1}}>
+                                                            <Grid container spacing={1}>
+                                                                <Grid item >   
+                                                                    <Chip style={{background: color1}} label={<span className="chip-text"><span style={{fontWeight:600}}>{review.tags}</span></span>}/>
+                                                                </Grid>
+                                                                <Grid item >   
+                                                                    <Chip label={<span className="chip-text">Grade: <span style={{fontWeight:600}}>{review.grade}</span></span>}/>
+                                                                </Grid>
+                                                                <Grid item >   
+                                                                    <Chip label={<span className="chip-text">Difficulty: <span style={{fontWeight:600}}>{review.difficulty}</span></span>}/>
+                                                                </Grid>
+                                                                <Grid item >   
+                                                                    <Chip label={<span className="chip-text">Quality: <span style={{fontWeight:600}}>{review.quality}</span></span>}/>
+                                                                </Grid>
+                                                                <Grid item >
+                                                                    <Chip label={<span className="chip-text">Will take again: <span style={{fontWeight:600}}>{review.take_again}</span></span>}/>
+                                                                </Grid>
+                                                                <Grid item >    
+                                                                    <Chip label={<span className="chip-text">Attendance: <span style={{fontWeight:600}}>{review.attendance}</span></span>}/>
+                                                                </Grid>
+                                                                <Grid item >   
+                                                                    <Chip label={<span className="chip-text">Rating: <span style={{fontWeight:600}}>{review.rating}</span></span>}/>
+                                                                </Grid>
+                                                                <Grid item >                                               
+                                                                    <Chip label={<span className="chip-text">For Credit: <span style={{fontWeight:600}}>{review.for_credit}</span></span>}/>
+                                                                </Grid>
+                                                                <Grid item >   
+                                                                    <Chip label={<span className="chip-text">Online: <span style={{fontWeight:600}}>{review.online}</span></span>}/>
+                                                                </Grid>
+                                                                <Grid item >   
+                                                                    <Chip label={<span className="chip-text">Sentiment: <span style={{fontWeight:600}}>{review.review_sentiment}</span></span>}/>
+                                                                </Grid>
+                                                            </Grid>
+                                                          </div>
+                                                        <div>
+                                                            <IconButton onClick={()=>{deleteHandler(review.review_id)}} title='Delete'>
+                                                                <DeleteIcon style={{color:'#E7625F'}} fontSize='large'/>
+                                                            </IconButton>
+                                                        </div>
                                                     </div>:null}
-                                                <Grid container spacing={1}>
-                                                    <Grid item >   
-                                                        <Chip style={{background: color1}} label={<span className="chip-text"><span style={{fontWeight:600}}>{review.tags}</span></span>}/>
-                                                    </Grid>
-                                                    <Grid item >   
-                                                        <Chip label={<span className="chip-text">Grade: <span style={{fontWeight:600}}>{review.grade}</span></span>}/>
-                                                    </Grid>
-                                                    <Grid item >   
-                                                        <Chip label={<span className="chip-text">Difficulty: <span style={{fontWeight:600}}>{review.difficulty}</span></span>}/>
-                                                    </Grid>
-                                                    <Grid item >   
-                                                        <Chip label={<span className="chip-text">Quality: <span style={{fontWeight:600}}>{review.quality}</span></span>}/>
-                                                    </Grid>
-                                                    <Grid item >
-                                                        <Chip label={<span className="chip-text">Will take again: <span style={{fontWeight:600}}>{review.take_again}</span></span>}/>
-                                                    </Grid>
-                                                    <Grid item >    
-                                                        <Chip label={<span className="chip-text">Attendance: <span style={{fontWeight:600}}>{review.attendance}</span></span>}/>
-                                                    </Grid>
-                                                    <Grid item >   
-                                                        <Chip label={<span className="chip-text">Rating: <span style={{fontWeight:600}}>{review.rating}</span></span>}/>
-                                                    </Grid>
-                                                    <Grid item >                                               
-                                                        <Chip label={<span className="chip-text">For Credit: <span style={{fontWeight:600}}>{review.for_credit}</span></span>}/>
-                                                    </Grid>
-                                                    <Grid item >   
-                                                        <Chip label={<span className="chip-text">Online: <span style={{fontWeight:600}}>{review.online}</span></span>}/>
-                                                    </Grid>
-                                                    <Grid item >   
-                                                        <Chip label={<span className="chip-text">Sentiment: <span style={{fontWeight:600}}>{review.review_sentiment}</span></span>}/>
-                                                    </Grid>
-                                                </Grid>
                                                 <div className="reviewText" ><p>{review.review}</p></div>
                                                 <div style={{display:'flex',flexDirection:'row'}}>
                                                     <div style={{flexGrow:1}}/>
@@ -223,8 +257,8 @@ const ProfessorPage = ()=>{
                         </div>
                     </div>
                 </Paper>
-                {reviewEditorVisible?<Paper elevation={6} id='review-editor-area'> 
-                                <ProfessorReviewEditor professor_name={professor.first_name+' '+professor.last_name}/>
+                {reviewEditorVisible&&!userHasReviewed?<Paper elevation={6} id='review-editor-area'> 
+                                <ProfessorReviewEditor fetchData={fetchData} user_id={user_id} professor_id={id} professor_name={professor.first_name+' '+professor.last_name}/>
                 </Paper>:null}
     </div>:<></>
 }

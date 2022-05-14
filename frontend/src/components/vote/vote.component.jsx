@@ -9,10 +9,11 @@ const VoteComponent = ({vote_count,type,id,voteDisable})=>{
     const {session} = useContext(AccountContext);
     const [voted,setVoted]= useState(0);
     const [vote_cnt,setVoteCnt]= useState(vote_count);
+    const user_id = session.idToken.payload.sub
     useEffect(()=>{
         
         if(id!==undefined){
-            const postfix = "?type="+type+"&id="+id+"&user_id="+session.idToken.payload.sub;
+            const postfix = "?type="+type+"&id="+id+"&user_id="+user_id;
             fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_vote_val'+postfix,{
               method:'GET', 
               headers: {
@@ -24,7 +25,7 @@ const VoteComponent = ({vote_count,type,id,voteDisable})=>{
               .then(data => {console.log();setVoted(data)})
               .catch(err=>{console.log(err)})
         }
-      },[id]);
+      },[id,user_id,type]);
     
       useEffect(()=>{
         setVoteCnt(vote_count)
@@ -34,8 +35,6 @@ const VoteComponent = ({vote_count,type,id,voteDisable})=>{
         var data = {};
         if (type==='question'){
             data.question_id = id
-        }else if(type==='blog'){
-            data.blog_id = id
         }else if(type==='answer'){
             data.answer_id = id
         }
