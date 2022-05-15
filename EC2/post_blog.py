@@ -83,7 +83,7 @@ def post_blog(event, model):
             list(model([event['blog_title']])[0].numpy()))),
      "timestamp": str(datetime.now()).split('.')[0],
      "edited": False,
-     "edited_timestamp": " ",
+     "edited_timestamp": "",
      "tags": event["tags"],
      "upvotes": 0,
      "user_id": event["user_id"],
@@ -162,7 +162,7 @@ def create_new(create_blog, event):
         #url = host+'/'+index
 
         new_record["blog_id"] = create_blog["blog_id"]
-        new_record['timestamp'] = create_blog["timestamp"]
+        new_record['timestamp'] = int(time.time()*10000)
         new_record["blog_title"] = event["blog_title"]
         url = host+index+ "/" + new_record["blog_id"] + "/"
         r = requests.post(url, auth=(master_user, master_password), json=new_record)
@@ -171,7 +171,7 @@ def create_new(create_blog, event):
         logger.debug(f"[USER][EXCEPTION] {e}")
         return {"status": 400,"message":"Something unexpected happened"}
     
-    return {"status": 200,"message":"Task completed",'body': json.dumps('Inserted into bubble-domain'), "blog_id":create_blog["blog_id"], "timestamp":create_blog["timestamp"]}
+    return {"status": 200,"message":"Task completed",'body': json.dumps('Inserted into bubble-domain'), "blog_id":create_blog["blog_id"], "timestamp":create_blog["timestamp"], 'headers':{"Access-Control-Allow-Origin": "*"}}
 
 def create_edit(event, create_blog):
 
@@ -191,7 +191,7 @@ def create_edit(event, create_blog):
                         "ExpressionAttributeValues":{
                             ":new_blog_content": {"S":event['blog_content']},
                             ":new_blog_title": {"S":event['blog_title']},
-                            ":new_image_urls": create_blog["image_urls"],
+                            ":new_image_urls": {"L":create_blog["image_urls"]},
                             ":new_blog_short_description": {"S":removetag[:750]},
                             ":edit_bool": {"BOOL": True},
                             ":edit_time": {"S":edit_time}
@@ -206,7 +206,7 @@ def create_edit(event, create_blog):
         logger.debug(f"[USER][EXCEPTION] {e}")
         return {"status": 400,"message":"Something unexpected happened"}
     
-    return {"status": 200,"message":"Task completed", "blog_id":event["blog_id"], "timestamp":edit_time}
+    return {"status": 200,"message":"Task completed", "blog_id":event["blog_id"], "timestamp":edit_time, 'headers':{"Access-Control-Allow-Origin": "*"}}
 
 
 def update_Elastic_Search(event):

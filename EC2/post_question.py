@@ -69,11 +69,11 @@ def post_question(event, model):
 	 "tags": event["tags"],
 	 "timestamp": str(datetime.now()).split('.')[0],
 	 "edited": False,
-	 "edited_timestamp": " ",
+	 "edited_timestamp": "",
 	 "upvotes": 0,
 	 "user_id": event["user_id"],
 	 "username": event["username"],
-	 "accepted_id": "empty"
+	 "accepted_id": ""
 	}
 
 	logger.debug(f"[USER][QUESTION] {dumps(create_question, as_dict=True)}")
@@ -139,10 +139,10 @@ def create_new(create_question, event):
 		)
 		new_record = {}
 		index = '/questions/Questions'
-		#url = host+'/'+index
+		url = host+'/'+index
 	
 		new_record["question_id"] = create_question["question_id"]
-		new_record['timestamp'] = create_question["timestamp"]
+		new_record['timestamp'] = int(time.time()*10000)
 		new_record["question_title"] = event["question_title"]
 	
 		url = host+index+ "/" + new_record["question_id"] + "/"
@@ -152,7 +152,7 @@ def create_new(create_question, event):
 		logger.debug(f"[USER][EXCEPTION] {e}")
 		return {"status": 400,"message":"Something unexpected happened"}
 	
-	return {"status": 200,"message":"Task completed",'body': json.dumps('Inserted into bubble-domain'), "question_id":create_question["question_id"], "timestamp":create_question["timestamp"]}   
+	return {"status": 200,"message":"Task completed",'body': json.dumps('Inserted into bubble-domain'), "question_id":create_question["question_id"], "timestamp":create_question["timestamp"], 'headers':{"Access-Control-Allow-Origin": "*"}}   
 
 def create_edit(event, create_question):
 	try:
@@ -169,7 +169,7 @@ def create_edit(event, create_question):
 						"ExpressionAttributeValues":{
 							":new_question_description": {"S":event['question_description']},
 							":new_question_title": {"S":event['question_title']},
-							":new_image_urls" : create_question["image_urls"],
+							":new_image_urls" : {"L":create_question["image_urls"]},
 							":edit_bool": {"BOOL": True},
 							":edit_time": {"S":edit_time}
 						}
@@ -183,7 +183,7 @@ def create_edit(event, create_question):
 		logger.debug(f"[USER][EXCEPTION] {e}")
 		return {"status": 400,"message":"Something unexpected happened"}
 	
-	return {"status": 200,"message":"Task completed", "question_id":event["question_id"], "timestamp":edit_time}
+	return {"status": 200,"message":"Task completed", "question_id":event["question_id"], "timestamp":edit_time, 'headers':{"Access-Control-Allow-Origin": "*"}}
 
 def update_Elastic_Search(event):
 	try:
