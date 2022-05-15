@@ -13,12 +13,17 @@ def lambda_handler(event, context):
     '''
     logger.debug(f"[USER][EVENT] {event}")
     logger.debug(f"[USER][CONTEXT] {context}")
-    q = {'question_id': event['question_id']}
-    logger.debug(f"[USER][QUERY] {q}")
-    response = table.get_item(Key=q)['Item']
-    response.pop("math_vector")
-    if 'comment_ids' not in response.keys():
-        response['comment_ids'] = []
-    else:
-        response['comment_ids'] = list(response['comment_ids'])
+    try:
+        q = {'question_id': event['question_id']}
+        logger.debug(f"[USER][QUERY] {q}")
+        response = table.get_item(Key=q)['Item']
+        response.pop("math_vector")
+        if 'comment_ids' not in response.keys():
+            response['comment_ids'] = []
+        else:
+            response['comment_ids'] = list(response['comment_ids'])
+    except Exception as e:
+        logger.debug(f"[USER][EXCEPTION] {e}")
+        return {"status": 400,"message":"Something unexpected happened"}
+    
     return response
