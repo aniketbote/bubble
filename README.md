@@ -22,7 +22,6 @@
 * AWS EC2
 * AWS Lambda
 * AWS IAM 
-* AWS SageMaker
 * AWS Rekognition
 * AWS SQS
 * AWS Comprehend
