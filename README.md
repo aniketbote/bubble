@@ -8,6 +8,11 @@
 [Bubble](http://bubble-nyu.s3-website-us-east-1.amazonaws.com)
 
 \
+**Video Presentation**
+*************
+[YouTube](https://youtu.be/BJFATRNQbPo)
+
+\
 **Project Description:**
 **************************
 * The fundamental purpose of this project is to give a better platform to NYU students so that they can interact with each other and develop a connection. This app will build a community of students so they can share their experiences with peers.
