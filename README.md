@@ -14,6 +14,11 @@
 * The main motivation behind building this application is for new incoming students to take advantage of the experience and knowledge of their seniors, right from the best place to eat near campus to the best courses to take for career advancement. The goal of this project is to create a forever increasing data resource compiled by students to help students. This platform will be a key place to exchange ideas, opinions and knowledge which will be beneficial for all.
 
 \
+**Architecture**
+*************
+![my_image](https://github.com/aniketbote/bubble/blob/master/Architecture/Architecture.png)
+
+\
 **AWS Services:**
 ****************************************
 * AWS Cognito
