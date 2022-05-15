@@ -16,7 +16,7 @@
 \
 **Architecture**
 *************
-![my_image](https://github.com/aniketbote/bubble/blob/master/Architecture/Architecture.png)
+![my_image](https://github.com/aniketbote/bubble/blob/master/Architecture/Architecture_Diagram.png)
 
 \
 **AWS Services:**
