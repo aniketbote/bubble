@@ -4,7 +4,7 @@ import uuid from 'react-uuid';
 import 'bootstrap/js/dist/modal';
 import 'bootstrap/js/dist/dropdown';
 import 'bootstrap/js/dist/tooltip';
-import 'react-summernote/dist/react-summernote.scss' ; 
+import 'react-summernote/dist/react-summernote.css' ; 
 import 'bootstrap_v3/dist/css/bootstrap.css';
 import './summernotePlainTextEditor.css';
 
