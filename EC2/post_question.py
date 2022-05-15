@@ -23,21 +23,21 @@ import sys
 from boto3.dynamodb.types import TypeSerializer
 import six
 
-client = boto3.client('dynamodb', aws_access_key_id="****",
-						  aws_secret_access_key="****", region_name= 'us-east-1')
+client = boto3.client('dynamodb', aws_access_key_id="********",
+						  aws_secret_access_key="********", region_name= 'us-east-1')
 
 dynamodb = boto3.resource(service_name='dynamodb',
-						  aws_access_key_id="****",
-						  aws_secret_access_key="****",
+						  aws_access_key_id="*********",
+						  aws_secret_access_key="**********",
 						  region_name="us-east-1",
 						  endpoint_url="http://dynamodb.us-east-1.amazonaws.com")
 table1 = dynamodb.Table('questions-db')
 table2 = dynamodb.Table('user-activity-db')
 
-host = 'open search host url'
+host = '***********'
 
-master_user = '****'
-master_password = 'password****'
+master_user = '********'
+master_password = '********'
 
 
 def findimagesrc(data):
@@ -69,11 +69,11 @@ def post_question(event, model):
 	 "tags": event["tags"],
 	 "timestamp": str(datetime.now()).split('.')[0],
 	 "edited": False,
-	 "edited_timestamp": " ",
+	 "edited_timestamp": "",
 	 "upvotes": 0,
 	 "user_id": event["user_id"],
 	 "username": event["username"],
-	 "accepted_id": "empty"
+	 "accepted_id": ""
 	}
 
 	logger.debug(f"[USER][QUESTION] {dumps(create_question, as_dict=True)}")
@@ -84,39 +84,26 @@ def post_question(event, model):
 	if 'question_id' not in event.keys():
 		reponse = create_new(create_question, event)
 	else:
-		reponse = create_edit(event)
+		reponse = create_edit(event, create_question)
 	return reponse
 
 def imageSQSRequest(requestData, questionid, userid):
 	
 
-	sqs = boto3.client('sqs', aws_access_key_id="****", 
-						aws_secret_access_key="****", region_name= 'us-east-1', endpoint_url="****")
+	sqs = boto3.client('sqs', aws_access_key_id="***********", 
+						aws_secret_access_key="**********", region_name= 'us-east-1', endpoint_url="*********")
 	
 
-
-	queue_url = "****"
+	queue_url = "*********"
 	messageAttributes = {
-		'question_id': {
-			'DataType': 'String',
-			'StringValue': questionid
-		},
-		'image_urls': {
-			'DataType': 'String',
-			'StringValue': requestData
-		},
-		'user_id':{
-			'DataType': 'String',
-			'StringValue': userid
-		},
-		'primary_key': {
-			'DataType': 'String',
-			'StringValue': questionid
-		}
+		"question_id": questionid ,
+		"image_urls": requestData ,
+		"user_id": userid ,
+		"pkey": questionid
 	}
-	messageBody=(messageAttributes)
+	#messageBody=(messageAttributes)
 	
-	response = sqs.send_message(QueueUrl = queue_url, MessageBody = str(messageBody))
+	response = sqs.send_message(QueueUrl = queue_url, MessageBody = json.dumps(messageAttributes))
 	
 	return response
 
@@ -147,10 +134,10 @@ def create_new(create_question, event):
 		)
 		new_record = {}
 		index = '/questions/Questions'
-		#url = host+'/'+index
+		url = host+'/'+index
 	
 		new_record["question_id"] = create_question["question_id"]
-		new_record['timestamp'] = create_question["timestamp"]
+		new_record['timestamp'] = int(time.time()*10000)
 		new_record["question_title"] = event["question_title"]
 	
 		url = host+index+ "/" + new_record["question_id"] + "/"
@@ -160,9 +147,9 @@ def create_new(create_question, event):
 		logger.debug(f"[USER][EXCEPTION] {e}")
 		return {"status": 400,"message":"Something unexpected happened"}
 	
-	return {"status": 200,"message":"Task completed",'body': json.dumps('Inserted into bubble-domain'), "question_id":create_question["question_id"], "timestamp":create_question["timestamp"]}   
+	return {"status": 200,"message":"Task completed",'body': json.dumps('Inserted into bubble-domain'), "question_id":create_question["question_id"], "timestamp":create_question["timestamp"], 'headers':{"Access-Control-Allow-Origin": "*"}}   
 
-def create_edit(event):
+def create_edit(event, create_question):
 	try:
 		edit_time = str(datetime.now()).split('.')[0]
 		response = client.transact_write_items(
@@ -173,10 +160,11 @@ def create_edit(event):
 						"Key":{
 							"question_id":{"S":event["question_id"]}
 						},
-						"UpdateExpression": "SET question_description = :new_question_description, question_title = :new_question_title, edited = :edit_bool, edited_timestamp = :edit_time",
+						"UpdateExpression": "SET question_description = :new_question_description, question_title = :new_question_title, edited = :edit_bool, edited_timestamp = :edit_time, image_urls = :new_image_urls",
 						"ExpressionAttributeValues":{
 							":new_question_description": {"S":event['question_description']},
 							":new_question_title": {"S":event['question_title']},
+							":new_image_urls" : {"L":create_question["image_urls"]},
 							":edit_bool": {"BOOL": True},
 							":edit_time": {"S":edit_time}
 						}
@@ -190,7 +178,7 @@ def create_edit(event):
 		logger.debug(f"[USER][EXCEPTION] {e}")
 		return {"status": 400,"message":"Something unexpected happened"}
 	
-	return {"status": 200,"message":"Task completed", "question_id":event["question_id"], "timestamp":edit_time}
+	return {"status": 200,"message":"Task completed", "question_id":event["question_id"], "timestamp":edit_time, 'headers':{"Access-Control-Allow-Origin": "*"}}
 
 def update_Elastic_Search(event):
 	try:

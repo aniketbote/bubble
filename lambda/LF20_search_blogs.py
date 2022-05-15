@@ -67,6 +67,7 @@ def lambda_handler(event, context):
             table = blogs_table
             q = {'blog_id': _id}
             response = table.get_item(Key=q)["Item"]
+            read_time = max(1, response["read_time"])
             comment_count = 0
             if "comment_ids" in response.keys():
                 comment_count = len(response["comment_ids"])
@@ -77,7 +78,7 @@ def lambda_handler(event, context):
                 "vote_count": response["upvotes"],
                 "comment_count": comment_count,
                 "timestamp": response["timestamp"],
-                "read_time": 5 ,
+                "read_time": read_time ,
                 "username": response["username"]
             }
             responses.append(cur_response)

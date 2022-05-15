@@ -1,3 +1,5 @@
+from bs4 import BeautifulSoup as BSHTML
+import urllib
 import simplejson as json
 import logging
 import boto3
@@ -11,8 +13,16 @@ import sys
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
-
 client = boto3.client('dynamodb')
+sqs = boto3.client('sqs')
+
+def findimagesrc(data):
+    soup = BSHTML(data)
+    images = soup.findAll('img')
+    imgSrcs = []
+    for image in images:
+        imgSrcs.append(image['src'])
+    return imgSrcs
 
 def lambda_handler(event, context):
     # TODO implement
@@ -20,18 +30,47 @@ def lambda_handler(event, context):
     logger.debug(f"[USER][CONTEXT] {context}")
     
     answer = {
-     "answer_id": uuid.uuid4().hex,
+     "answer_id": uuid.uuid4().hex if 'answer_id' not in event.keys() else event['answer_id'],
      "upvotes": 0,
      "user_id": event["user_id"],
      "downvotes": 0,
      "timestamp": str(datetime.now()).split('.')[0],
      "username": event["username"],
      "answer": event["answer"],
-     "image_urls": event["image_urls"],
-     "comment_ids": []
+     "edited": False,
+     "edited_timestamp":"",
+     "image_urls": findimagesrc(event["answer"])
+    #  "comment_ids": []
     }
     
+    
     logger.debug(f"[USER][ANSWER] {dumps(answer, as_dict=True)}")
+    
+    for url in answer["image_urls"]:
+        sqsid = imageSQSRequest(url, answer['answer_id'], answer['user_id'])
+    
+    if 'answer_id' not in event.keys():
+        reponse = create_new(answer, event)
+    else:
+        reponse = create_edit(event, dumps(answer, as_dict=True))
+    return reponse
+
+def imageSQSRequest(requestData, answerid, userid):
+
+    queue_url = "*********"
+    messageAttributes = {
+        "answer_id": answerid,
+        "image_urls": requestData,
+        "user_id": userid,
+        "pkey": "answer_id"
+    }
+    # messageBody=(messageAttributes)
+    
+    response = sqs.send_message(QueueUrl = queue_url, MessageBody = json.dumps(messageAttributes))
+    
+    return response
+    
+def create_new(answer, event):
     try:
         response = client.transact_write_items(
             TransactItems=[
@@ -74,7 +113,37 @@ def lambda_handler(event, context):
         logger.debug(f"[USER][EXCEPTION] {e}")
         return {"status": 400,"message":"Something unexpected happened"}
     
-    return {"status": 200,"message":"Task completed"}
+    return {"status": 200,"message":"Task completed", "answer_id":answer["answer_id"], "timestamp":answer["timestamp"]}
+    
+def create_edit(event, answer):
+    try:
+        edit_time = str(datetime.now()).split('.')[0]
+        response = client.transact_write_items(
+            TransactItems=[
+                {
+                    "Update":{
+                        "TableName": "answers-db",
+                        "Key":{
+                            "answer_id":{"S":event["answer_id"]}
+                        },
+                        "UpdateExpression": "SET answer = :new_answer, edited = :edit_bool, edited_timestamp = :edit_time, image_urls = :new_image_urls",
+                        "ExpressionAttributeValues":{
+                            ":new_answer": {"S":event['answer']},
+                            ":edit_bool": {"BOOL": True},
+                            ":edit_time": {"S":edit_time},
+                            ":new_image_urls" : answer['image_urls'] 
+                        }
+                        
+                    }
+                }
+            ]
+        )
+    except Exception as e:
+        logger.debug(f"[USER][EXCEPTION] {e}")
+        return {"status": 400,"message":"Something unexpected happened"}
+    
+    return {"status": 200,"message":"Task completed", "answer_id":event["answer_id"], "timestamp":edit_time}
+    
         
         
     

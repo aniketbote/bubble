@@ -5,7 +5,6 @@ import uuid
 from datetime import datetime
 
 from boto3.dynamodb.types import TypeSerializer
-import re
 from decimal import Decimal
 import six
 import sys
@@ -20,55 +19,42 @@ def lambda_handler(event, context):
     logger.debug(f"[USER][EVENT] {event}")
     logger.debug(f"[USER][CONTEXT] {context}")
     
-    comment = {
-     "comment_id": uuid.uuid4().hex,
-     "user_id": event["user_id"],
-     "username": event["username"],
-     "comment_content": event["comment_content"],
-     "timestamp": str(datetime.now()).split('.')[0]
-    }
-    table_name, prim_key = ("questions-db", "question_id") if "question_id" in event.keys() else ("answers-db", "answer_id")
-    logger.debug(f"[USER][VAR] table_name : {table_name}  prim_key: {prim_key}")
+    
+    if "question_id" in event.keys():
+        table_name, prim_key = ("questions-db", "question_id")
+    elif "answer_id" in event.keys():
+        table_name, prim_key= ("answers-db", "answer_id")
+    elif "review_id" in event.keys():
+        table_name, prim_key = ("professor-reviews-db", "review_id")
+    elif "comment_id" in event.keys():
+        return {"status": 400,"message":"Bad request"}
+    elif 'blog_id' in event.keys():
+        table_name, prim_key= ("blogs-db", "blog_id")
+    else:
+        return {"status": 400,"message":"Bad request"}
+        
     
     
-    
-    logger.debug(f"[USER][COMMENT] {dumps(comment, as_dict=True)}")
+    response = set_delete(event, table_name, prim_key)
+    return response
+
+def set_delete(event, tname, pkey):
     try:
         response = client.transact_write_items(
             TransactItems=[
                 {
-                    "Put":{
-                        "TableName": "comments-db",
-                        "Item":dumps(comment, as_dict=True)
-                    }
-                },
-                {
                     "Update":{
-                        "TableName": table_name,
+                        "TableName": tname,
                         "Key":{
-                            prim_key:{"S":event[prim_key]}
+                            pkey:{"S":event[pkey]}
                         },
-                        "UpdateExpression": "SET comment_ids = list_append(comment_ids,:new_element)",
+                        "UpdateExpression": "SET deleted = :delete_bool",
                         "ExpressionAttributeValues":{
-                            ":new_element": {"L": [{"S":comment['comment_id']}]}
-                        }
-                        
-                    }
-                },
-                {
-                    "Update":{
-                        "TableName": "user-activity-db",
-                        "Key":{
-                            "user_id":{"S":event["user_id"]}
-                        },
-                        "UpdateExpression": "SET comments_created = list_append(comments_created,:new_element)",
-                        "ExpressionAttributeValues":{
-                            ":new_element": {"L": [{"S":comment['comment_id']}]}
+                            ":delete_bool": {"BOOL": False}
                         }
                         
                     }
                 }
-                
             ]
         )
     except Exception as e:
@@ -76,6 +62,9 @@ def lambda_handler(event, context):
         return {"status": 400,"message":"Something unexpected happened"}
     
     return {"status": 200,"message":"Task completed"}
+    
+        
+        
     
 def json_serial(o):
     if isinstance(o, datetime):

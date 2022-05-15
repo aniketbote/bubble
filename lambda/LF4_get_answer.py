@@ -1,3 +1,4 @@
+import json
 import logging
 import boto3
 
@@ -11,12 +12,18 @@ def lambda_handler(event, context):
     # TODO implement
     logger.debug(f"[USER][EVENT] {event}")
     logger.debug(f"[USER][CONTEXT] {context}")
+    if len(event['answer_ids']) == 0:
+        return []
     response = client.batch_get_item(
         RequestItems={
-            'comments-db': {'Keys': [{'comment_id': id} for id in event['comment_ids']]}
+            'answers-db': {'Keys': [{'answer_id': id} for id in event['answer_ids']]}
         }
-    )['Responses']['comments-db']
+    )['Responses']['answers-db']
     logger.debug(f"[USER][RESPONSE] {response}")
-    
+    for i in range(len(response)):
+        if 'comment_ids' not in response[i].keys():
+            response[i]['comment_ids'] = []
+        else:
+            response[i]['comment_ids'] = list(response[i]['comment_ids'])
     
     return response
