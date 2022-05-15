@@ -7,13 +7,23 @@ const SignIn = () =>{
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     const [errorMessage,setErrorMessage] = useState('');
-    const {authenticate,setUserStatus} = useContext(AccountContext)
+    const {authenticate,setUserStatus,getSession,setSession} = useContext(AccountContext)
     const onsubmit = (e)=>{
         e.preventDefault()
             authenticate(email,password).then(data =>
                 {
-                    setUserStatus(true)
+
                     setErrorMessage('');
+                    getSession()
+                    .then((sess)=>{
+                      setSession(sess)
+                    })
+                    .then(()=>{
+                      setUserStatus(true);
+                    })
+                    .catch(()=>{setUserStatus(false); console.log('fail')})
+                    
+        
                 })
                 .catch(err => {
                     if(err.name==='UserNotConfirmedException')

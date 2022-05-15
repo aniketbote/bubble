@@ -23,9 +23,11 @@ const RelatedQuestions = ({question_id}) =>{
 
         
     return <div className="related-questions-div">
-                <p className='header' >Related Questions</p>
+                
                 {
                     questions.length>0?
+                    <>
+                    <p className='header' >Related Questions</p>
                     <ul className='related-list'>
                         {
                             questions.map((question)=>{
@@ -33,14 +35,15 @@ const RelatedQuestions = ({question_id}) =>{
                                             <div style={{display:'flex'}}>
                                                 <Chip style={{fontSize:'10px',paddingTop:'3px',minWidth:'40px'}} 
                                                       label={question.vote_count} 
-                                                    color={question.accepted_answer!==""?"success":"warning"} size="small" variant="outlined" />
+                                                      color={question.accepted_answer!==""?"success":"warning"} size="small" variant="outlined" />
                                                 <Link className="rel-question-link"  to={'/question/'+question.question_id}> {question.question_title} </Link> 
                                             </div>
                                             <div style={{height:'15px'}}/>
                                         </li>
                             })
                         }
-                    </ul>:null
+                    </ul>
+                    </>:null
                     
                 }
                 

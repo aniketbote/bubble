@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 import { Button, CircularProgress, Pagination } from '@mui/material';
 import { useNavigate } from 'react-router';
 import BlogCard from '../../components/blogCard/blogCard.component';
+import { useDispatch } from 'react-redux';
+import { actionCreators } from '../../state';
+import { bindActionCreators } from 'redux';
 
 const QuestionListPage = () => {
     const [content,setContent] = useState([]);
@@ -17,6 +20,12 @@ const QuestionListPage = () => {
     const navigate = useNavigate();
 
     const container = document.querySelector('.contentBar');
+
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const {setButtonGroupView} = bindActionCreators(actionCreators,dispatch);
+        setButtonGroupView('home')
+    },[])
 
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/latest_feeds?start='+start,{
@@ -32,11 +41,12 @@ const QuestionListPage = () => {
                 if(container!==null){
                     container.scrollTop = 0 ;
                 }
-            }})
+            }}).catch(err=>{navigate('/invalid')})
     },[start,forceLoad,container])
 
     const get_search_results = ()=>{
         if(searchString!==''){
+            setContent([])
             setSearched(true)
             fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/search_generic_query?search_string='+searchString,{
                 method:'GET',
@@ -75,17 +85,16 @@ const QuestionListPage = () => {
                 <Button style={{fontSize:'small'}} 
                         variant='text' 
                         size='large'
-                        onClick={()=>{setSearchString('');setSearched(false);setNoSearchResults(false)}}> get back to recent questions </Button>
+                        onClick={()=>{setSearchString('');setSearched(false);setNoSearchResults(false)}}> get back to recent feeds </Button>
             </div>
         )
     }
-    if(content.length<1)
-         return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
 
 
     return (
         <>
             <SearchBar setSearchString={setSearchString} get_search_results={get_search_results}/>
+            {content.length!==0?
             <div style={{paddingTop:'15px'}} >
                 <div style={{display:'flex', flexDirection:'row'}}>
                     <h3 style={{marginLeft:'15px',flexGrow:1}}>
@@ -110,9 +119,11 @@ const QuestionListPage = () => {
                                 })}
                 </div>
                 <div style={{padding:'20px 0px'}}>
-                         {content.length>0 && !searched ?<Pagination onChange={(_,val)=>{ setStart(val-1)}}  color='primary' count={start+5} size="large"/>:<></>}
+                         {content.length>0 && !searched ?<Pagination defaultPage={start+1} onChange={(_,val)=>{setContent([]); setStart(val-1)}}  color='primary' count={start+5} size="large"/>:<></>}
                 </div>
             </div>
+            :
+            <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>}
         </>
     );
 }

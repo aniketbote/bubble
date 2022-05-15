@@ -7,6 +7,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { AccountContext } from "../../Account/Account.context";
 import timeDifference from "../../helper/time-difference";
 import ProfessorReviewEditor from "../../components/professorReviewEditor/professorReviewEditor.component";
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../../state';
 
 const ProfessorPage = ()=>{
     const {id} = useParams('id');
@@ -23,6 +26,12 @@ const ProfessorPage = ()=>{
     const {session} = useContext(AccountContext);
     const user_id = session.idToken.payload.sub;
 
+    
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const {setButtonGroupView} = bindActionCreators(actionCreators,dispatch);
+        setButtonGroupView('FAP')
+    },[])
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_professor',{
             method:'POST',
@@ -114,9 +123,27 @@ const ProfessorPage = ()=>{
     }
     
     const deleteHandler = (review_id)=>{
-        
-        fetchData();
+        const data ={
+          user_id: user_id,
+          review_id: review_id,
+          parent_id: review_id,
+          parent:'review'
+        }
+        if(window.confirm('Are you sure you want to delete this review?')){
+          fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/delete',{
+            method:'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin':'*'
+              },
+            body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(() => {fetchData();userHasReviewed(false)})
+            .catch(err=>{console.log(err)})
+        }
     }
+    
 
     return professor?<div className="professor-div">
             <div  className="professor-div">
@@ -203,7 +230,7 @@ const ProfessorPage = ()=>{
                                     }
                                     return professor.num_ratings>0?
                                             <Paper id={review.review_id} key={review.review_id} style={{margin:'30px 50px',padding:'10px',background: color2}} elevation={5}>
-                                                {user_id===review.user_id?
+                                                
                                                     <div style={{display:'flex',flexDirection:'row'}}>
                                                         <div style={{flexGrow:1}}>
                                                             <Grid container spacing={1}>
@@ -239,13 +266,15 @@ const ProfessorPage = ()=>{
                                                                 </Grid>
                                                             </Grid>
                                                           </div>
+                                                        {user_id===review.user_id?
                                                         <div>
                                                             <IconButton onClick={()=>{deleteHandler(review.review_id)}} title='Delete'>
                                                                 <DeleteIcon style={{color:'#E7625F'}} fontSize='large'/>
                                                             </IconButton>
                                                         </div>
-                                                    </div>:null}
-                                                <div className="reviewText" ><p>{review.review}</p></div>
+                                                        :null}
+                                                    </div>
+                                                <div className="reviewText" dangerouslySetInnerHTML={{__html:review.review}} />
                                                 <div style={{display:'flex',flexDirection:'row'}}>
                                                     <div style={{flexGrow:1}}/>
                                                     <p style={{marginBottom:'-5px',marginTop:'3px'}} className="time-text">Posted {timeDifference(review.timestamp)}. </p>

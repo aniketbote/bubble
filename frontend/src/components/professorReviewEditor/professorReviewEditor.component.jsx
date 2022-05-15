@@ -39,7 +39,7 @@ const ProfessorReviewEditor = ({user_id,professor_id,fetchData,professor_name})=
             grade: grade,
             online: online,
             rating: rating,
-            review: review.replace( /(<([^>]+)>)/ig, ''),
+            review: '<p>'+review.replace( /(<([^>]+)>)/ig, '')+'</p>',
             user_id: user_id
         }
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/post_review',{
@@ -59,7 +59,7 @@ const ProfessorReviewEditor = ({user_id,professor_id,fetchData,professor_name})=
                             behavior: 'smooth',
                             block: 'center',
                             inline: 'center'});
-                    }, 100);
+                    }, 500);
                 })
             .catch(err=>{console.log(err)})
     }

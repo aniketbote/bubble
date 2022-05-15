@@ -48,17 +48,20 @@ const CommentSection = ({answer_id,question_id,blog_id,comment_ids}) =>{
             data.parent = 'blog';
           }
           console.log(data)
-          fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/delete',{
-              method:'POST', 
-              headers: {
-                  'Content-Type': 'application/json',
-                  'Access-Control-Allow-Origin':'*'
-                },
-              body: JSON.stringify(data)
-              })
-              .then(response => response.json())
-              .then(() => {setComments(comments.filter((com)=>com!==comment))})
-              .catch(err=>{console.log(err)})
+          if(window.confirm('Are you sure you want to delete this comment?')){
+              fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/delete',{
+                method:'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin':'*'
+                  },
+                body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(() => {setComments(comments.filter((com)=>com!==comment))})
+                .catch(err=>{console.log(err)})
+          }
+        
     }
     return(
         <>

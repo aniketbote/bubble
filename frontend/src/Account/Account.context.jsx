@@ -9,8 +9,8 @@ const Account = ({children}) => {
     const [userStatus,setUserStatus] = useState(false);
     const [session,setSession] = useState({});
 
-    const getSession =  () =>
-     new Promise((resolve, reject) => {
+    const getSession = () =>
+      new Promise((resolve, reject) => {
       const user = UserPool.getCurrentUser();
       if (user) {
         user.getSession((err, session) => {

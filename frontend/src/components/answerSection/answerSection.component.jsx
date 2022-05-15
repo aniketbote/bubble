@@ -45,7 +45,8 @@ const AnswerSection = ({answer_ids, question_id,accepted_id}) =>{
       parent_id: question_id,
       parent:'question'
     }
-    fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/delete',{
+    if(window.confirm('Are you sure you want to delete this answer?')){
+      fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/delete',{
         method:'POST', 
         headers: {
             'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ const AnswerSection = ({answer_ids, question_id,accepted_id}) =>{
         .then(response => response.json())
         .then(() => {setAnswers(answers.filter((ans)=>ans!==answer))})
         .catch(err=>{console.log(err)})
-
+    }
  }
 
     return (

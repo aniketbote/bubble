@@ -23,13 +23,15 @@ const RelatedBlogs = ({blog_id}) =>{
 
         
     return <div className="related-blogs-div">
-                <p className='header' >Related Blogs</p>
+               
                 {
                     blogs.length>0?
+                    <>
+                    <p className='header' >Related Blogs</p>
                     <ul className='related-list'>
                         {
                             blogs.map((blog)=>{
-                                return  <li key={blogs.blogs_id} >
+                                return  <li key={blog.blog_id} >
                                             <div style={{display:'flex'}}>
                                                 <Chip style={{fontSize:'10px',paddingTop:'3px',minWidth:'40px'}} 
                                                       label={blog.vote_count} 
@@ -40,7 +42,8 @@ const RelatedBlogs = ({blog_id}) =>{
                                         </li>
                             })
                         }
-                    </ul>:null   
+                    </ul> 
+                    </>:null  
                 }                
            </div>
 }

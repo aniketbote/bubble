@@ -8,8 +8,11 @@ import { useContext, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import DOMPurify from 'dompurify';
 import './blogCreation.style.css'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AccountContext } from '../../Account/Account.context';
+import { actionCreators } from '../../state';
+import { bindActionCreators } from 'redux';
+import { useDispatch } from 'react-redux';
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
@@ -56,12 +59,19 @@ const BlogCreationPage = ()=>{
     const [tagText,setTagText] = useState('');
     const [apiTagsList,setApiTagsList] = useState([]);
     const [blogToEdit,setBlogToEdit] = useState({});
-
+    const [disableButton,setDisableButton] = useState(true);
     const {session} = useContext(AccountContext);
     const user_id = session.idToken.payload.sub;
+    const username = session.idToken.payload.preferred_username;
     const location = useLocation();
-  
+    const navigate = useNavigate();
     const {state} = location;
+
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const {setButtonGroupView} = bindActionCreators(actionCreators,dispatch);
+        setButtonGroupView('blogs')
+    },[])
 
     var data = {
       user_id: user_id
@@ -69,13 +79,24 @@ const BlogCreationPage = ()=>{
 
     useEffect(()=>{
       if(state!==null){
-        data.question_id = state.question_id;
         setContent(state.blog_description);
         setTitle(state.blog_title);
         setTags(state.tags);
         setBlogToEdit(state)
       }
     },[state])
+
+    useEffect(()=>{
+      if(content.replace( /(<([^>]+)>)/ig, '').replace(/&nbsp;/gi,'').replace(/\s/g ,'').length > 20
+         && title.length>10)
+      {
+          setDisableButton(false);
+      }
+      else{
+          setDisableButton(true);
+      }
+
+    },[content,title])
 
     const handleKeyDown = (e) => {
       if (e.key === 'Enter') {
@@ -102,6 +123,27 @@ const BlogCreationPage = ()=>{
           .then(data=> setApiTagsList(data.items.map(x=>x.name)))
     }
 
+    const handleSubmit = ()=>{
+      data.username = username;
+      data.blog_title = title;
+      data.blog_content = content;
+      data.tags = tags;
+      if(state!==null)
+        data.blog_id = state.blog_id;
+      console.log(data)
+      fetch('http://3.239.217.225:8080/blog',{
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin':'*',
+              },
+            body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {navigate('/blog/'+data.blog_id) })
+            .catch(err=>console.log(err))
+    }
+
     return (
             <div style={{display:'flex',flexDirection:'column',marginTop:'15px'}}>                    
                 <div style={{display:'flex',marginLeft:'10px'}}> 
@@ -110,7 +152,7 @@ const BlogCreationPage = ()=>{
                     </InputLabel>
                 </div>
                 <div style={{marginLeft:'10px'}}> 
-                        <BootstrapInput value={title} onChange={e => setTitle(e.target.value)} placeholder='Title'  /> 
+                        <BootstrapInput id='bootstrap-input-title' value={title} onChange={e => setTitle(e.target.value)} placeholder='Title'  /> 
                 </div>
                 <div style={{display:'flex',marginLeft:'10px',marginTop:'15px'}}> 
                     <InputLabel htmlFor="bootstrap-input">
@@ -144,7 +186,7 @@ const BlogCreationPage = ()=>{
                       </Grid>))}
                   </Grid>                
                 </div>
-                <div style={{margin:'10px'}}><Button style={{fontSize:'12px'}} variant="contained">Submit Blog</Button></div>
+                <div style={{margin:'10px'}}><Button disabled={disableButton} onClick={handleSubmit} style={{fontSize:'12px'}} variant="contained">Submit Blog</Button></div>
             </div>
             )
 }

@@ -1,5 +1,5 @@
 import './App.css';
-import {Route,Routes, Navigate} from 'react-router-dom'; //also check Link, NavLink, Outlet
+import {Route,Routes, Navigate, useLocation} from 'react-router-dom'; //also check Link, NavLink, Outlet
 import HomePage from './pages/homePage/homepage.component';
 import LoginSignupPage from './pages/loginSignupPage/loginSignup.component';
 import ErrorPage from './pages/errorPage/errorpage.component';
@@ -15,17 +15,23 @@ import QuestionListPage from './pages/questionsListPage/questionsList.component'
 import BlogListPage from './pages/blogListPage/blogList.component';
 import FAPPage from './pages/findAProfessor/findAProfessor.component';
 import ProfessorPage from './pages/professorPage/professorPage.component';
+import AddProfessor from './pages/addProfessor/addProfessor.component';
+import AccountPage from './pages/accountPage/accountPage.component';
 
 function App() {
   
-  const {userStatus,setUserStatus,getSession,setSession} = useContext(AccountContext)
+  const {session,userStatus,setUserStatus,getSession,setSession} = useContext(AccountContext)
   const [shouldRender,setShouldRender] = useState(false);
+  const location = useLocation();
   useEffect(()=>{
     getSession()
-    .then((session)=>{setSession(session);setUserStatus(true)})
-    .catch(()=>{setUserStatus(false)})
+    .then((sess)=>{
+      setSession(sess);
+      setUserStatus(true);
+      console.log(session);
+    })
+    .catch(()=>{setUserStatus(false); console.log('fail')})
     .finally(()=>{setShouldRender(true)})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   return (
     <div>
@@ -43,9 +49,12 @@ function App() {
             <Route exact path="blogs" element={<BlogListPage/>}/>
             <Route exact path="find_a_professor" element={<FAPPage/>}/>
             <Route exact path="professor/:id" element={<ProfessorPage/>}/>
+            <Route exact path="add_professor" element={<AddProfessor/>}/>
+            <Route exact path="account" element={<AccountPage/>}/>
+            <Route  path="*" element={<ErrorPage/>}/>
           </Route>
           <Route exact  path="/login" element={!userStatus?<LoginSignupPage/>:<Navigate replace to="/"/>}/>
-          <Route  path="*" element={<ErrorPage/>}/>
+
       </Routes>:null}
     </div> 
   )

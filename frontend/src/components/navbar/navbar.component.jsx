@@ -18,6 +18,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonSearchRoundedIcon from '@mui/icons-material/PersonSearchRounded';
+import { useNavigate } from 'react-router-dom';
 
 export default function NavBar() {
 
@@ -45,6 +46,7 @@ export default function NavBar() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+  const navigate = useNavigate();
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -102,25 +104,25 @@ export default function NavBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton  color="inherit">
+      <MenuItem onClick={()=>{navigate('/home')}}>
+        <IconButton   color="inherit">
             <HomeIcon fontSize="large" />
         </IconButton>
         <p className="menu-text">Home</p>
       </MenuItem>    
-      <MenuItem>
-        <IconButton  color="inherit">
+      <MenuItem onClick={()=>{navigate('/questions')}}>
+        <IconButton   color="inherit">
             <QuestionMarkIcon fontSize="large" />
         </IconButton>
         <p className="menu-text">Questions</p>
       </MenuItem>
-      <MenuItem>
-        <IconButton  color="inherit">
+      <MenuItem onClick={()=>{navigate('/blogs')}}>
+        <IconButton   color="inherit">
             <ArticleIcon fontSize="large" />
         </IconButton>
         <p className="menu-text">Blogs</p>
       </MenuItem>
-      <MenuItem>
+      <MenuItem  onClick={()=>{navigate('/find_a_professor')}}>
         <IconButton  color="inherit">
             <PersonSearchRoundedIcon fontSize="large" />
         </IconButton>

@@ -1,6 +1,6 @@
 import './blogPage.style.css';
 import { useEffect, useState,useContext } from 'react';
-import { Chip, CircularProgress, Grid, IconButton, Paper } from '@mui/material';
+import { Button, Chip, CircularProgress, Grid, IconButton, Paper } from '@mui/material';
 import timeDifference from '../../helper/time-difference'
 import { AccountContext } from '../../Account/Account.context';
 import CommentSection from '../../components/commentSection/commentSection.component';
@@ -9,13 +9,22 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BlogLikes from '../../components/blogLikeSection/blogLikeSection.component';
 import RelatedBlogs from '../../components/relatedBlogs/relatedBlogs';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../../state';
 
 const BlogPage = ()=>{
     const {session} = useContext(AccountContext);
-    const user_id = session.idToken.payload.sub;
     const [data,setData] = useState({});
     const {blog_id} = useParams();
     const navigate = useNavigate();
+    var user_id=session.idToken.payload.sub;
+
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const {setButtonGroupView} = bindActionCreators(actionCreators,dispatch);
+        setButtonGroupView('blogs')
+    },[])
 
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_blog',{
@@ -27,12 +36,53 @@ const BlogPage = ()=>{
             body: JSON.stringify({blog_id:blog_id})
             })
             .then(response => response.json())
-            .then(data => {console.log(data); setData(data)})
+            .then(data => {console.log(data);
+                if(data.status===400){
+                    navigate('/invalid')
+                }; 
+                setData(data)})
+            .catch(err=>{console.log(err); navigate('/invalid')})
     },[blog_id])
 
-    const handelEdit = ()=>{
+    const handleEdit = ()=>{
         navigate('/create_blog',{state:data});
     }
+    const handleDelete = ()=>{
+        const item ={
+          user_id: data.user_id,
+          blog_id: blog_id,
+          parent_id: blog_id,
+          parent:'blog'
+        }
+        if(window.confirm('Are you sure you want to delete this blog?')){
+            fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/delete',{
+                method:'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin':'*'
+                  },
+                body: JSON.stringify(item)
+                })
+                .then(response => response.json())
+                .then(() => {navigate('/')})
+                .catch(err=>{console.log(err)})
+        }
+
+     }
+     if(data.deleted){
+         return <div style={{padding:'15px'}}>
+         <h3>This content has deleted because one of the following reasons.</h3>
+         <ul>
+             <li> The content was deleted by the owner himself/herself.</li>
+             <li> One of our moderator find this content inappropriate.</li>
+             <li> Out system detected some explicit or inappropriate media inside the content.</li>
+         </ul>
+         <Button style={{fontSize:'small'}} 
+                 variant='text' 
+                 size='large'
+                 onClick={navigate('/blogs')}> get back to recent blogs </Button>
+     </div>
+     }
 
     if(data.blog_content===undefined)
         return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
@@ -42,13 +92,13 @@ const BlogPage = ()=>{
         <div className='content-column'>
             <div style={{display:'flex',flexDirection:'row',flexGrow:1}}>
             <div className='left-column' style={{flexDirection:'column',flexGrow:1}}>
-            {user_id!==data.user_id?
+            {user_id===data.user_id?
                     <div style={{display:'flex',flexDirection:'row'}}>
                         <div style={{flexGrow:1}}/>
-                            <IconButton title='Edit'>
-                                <EditIcon onClick={handelEdit} style={{color:'#003060'}} fontSize='large'/>
+                            <IconButton onClick={handleEdit} title='Edit'>
+                                <EditIcon  style={{color:'#003060'}} fontSize='large'/>
                             </IconButton>
-                            <IconButton title='Delete'>
+                            <IconButton onClick={handleDelete} title='Delete'>
                                 <DeleteIcon style={{color:'#E7625F'}} fontSize='large'/>
                             </IconButton>
                          </div>:null}

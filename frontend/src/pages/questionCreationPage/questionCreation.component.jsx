@@ -8,8 +8,12 @@ import { useContext, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import DOMPurify from 'dompurify';
 import './questionCreation.style.css'
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import { AccountContext } from '../../Account/Account.context';
+import ec2_url from '../../helper/ec2-url';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../../state';
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
@@ -57,25 +61,31 @@ const QuestionCreationPage = ()=>{
     const [apiTagsList,setApiTagsList] = useState([]);
     const {session} = useContext(AccountContext);
     const user_id = session.idToken.payload.sub;
+    const username = session.idToken.payload.preferred_username;
     const [questionToEdit,setQuestionToEdit] = useState({});
+    const [disableButton,setDisableButton] = useState(true);
     const location = useLocation();
     const {state} = location;
-
+    const navigate = useNavigate();
     var data = {
       user_id: user_id
     };
 
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const {setButtonGroupView} = bindActionCreators(actionCreators,dispatch);
+        setButtonGroupView('questions')
+    },[])
+
+    console.log(session)
     useEffect(()=>{
       if(state!==null){
-        data.question_id = state.question_id;
         setContent(state.question_description);
         setTitle(state.question_title);
         setTags(state.tags);
         setQuestionToEdit(state)
       }
     },[state])
-
-
     const handleKeyDown = (e) => {
       if (e.key === 'Enter') {
         const tagTextValue = e.target.value.replace(/\s/g, '');
@@ -86,6 +96,39 @@ const QuestionCreationPage = ()=>{
     const handleDelete = (key) => {
      setTags(tags.filter(item => item !== key));
     };
+    useEffect(()=>{
+      if(content.replace( /(<([^>]+)>)/ig, '').replace(/&nbsp;/gi,'').replace(/\s/g ,'').length > 20
+         && title.length>10)
+      {
+          setDisableButton(false);
+      }
+      else{
+          setDisableButton(true);
+      }
+
+    },[content,title])
+
+    const handleSubmit = ()=>{
+      data.username = username;
+      data.question_title = title;
+      data.question_description = content;
+      data.tags = tags;
+      if(state!==null)
+        data.question_id = state.question_id;
+
+      console.log(data)
+      fetch('http://3.239.217.225:8080/question',{
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin':'*',
+              },
+            body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data =>{ navigate('/question/'+data.question_id) })
+            .catch(err=>console.log(err))
+    }
 
     const addTag = (value)=>{
       const tagTextValue = value;
@@ -110,7 +153,7 @@ const QuestionCreationPage = ()=>{
                     </InputLabel>
                 </div>
                 <div style={{marginLeft:'10px'}}> 
-                        <BootstrapInput value={title} onChange={e => setTitle(e.target.value)} placeholder='Title'  /> 
+                        <BootstrapInput id='bootstrap-input-title' value={title} onChange={e => setTitle(e.target.value)} placeholder='Title'  /> 
                 </div>
                 <div style={{display:'flex',marginLeft:'10px',marginTop:'15px'}}> 
                     <InputLabel htmlFor="bootstrap-input">
@@ -144,7 +187,8 @@ const QuestionCreationPage = ()=>{
                       </Grid>))}
                   </Grid>                
                 </div>
-                <div style={{margin:'10px'}}><Button style={{fontSize:'12px'}} variant="contained">Submit Question</Button></div>
+                <div   style={{margin:'10px'}}><Button disabled={disableButton} onClick={handleSubmit} style={{fontSize:'12px'}} variant="contained">Submit Question</Button></div>
+
             </div>
             )
 }

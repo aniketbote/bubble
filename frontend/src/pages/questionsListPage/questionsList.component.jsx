@@ -4,6 +4,9 @@ import QuestionCard from '../../components/questionCard/questionCard.component';
 import { useEffect, useState } from 'react';
 import { Button, CircularProgress, Pagination } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../../state';
 
 const QuestionListPage = () => {
     const [questions,setQuestions] = useState([]);
@@ -16,6 +19,13 @@ const QuestionListPage = () => {
     const navigate = useNavigate();
 
     const container = document.querySelector('.contentBar');
+
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const {setButtonGroupView} = bindActionCreators(actionCreators,dispatch);
+        setButtonGroupView('questions')
+    },[])
+
 
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_latest_questions?start='+start,{
@@ -31,11 +41,15 @@ const QuestionListPage = () => {
                 if(container!==null){
                     container.scrollTop = 0 ;
                 }
+            }
+            else{
+                navigate('/invalid')
             }})
     },[start,forceLoad,container])
 
     const get_search_results = ()=>{
         if(searchString!==''){
+            setQuestions([]);
             setSearched(true)
             fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/search_question?search_string='+searchString,{
                 method:'GET',
@@ -79,13 +93,10 @@ const QuestionListPage = () => {
         )
     }
 
-    if(questions.length<1)
-        return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
-
     return (
         <>
             <SearchBar setSearchString={setSearchString} get_search_results={get_search_results}/>
-            <div style={{paddingTop:'15px'}} >
+            {questions.length!==0?<div style={{paddingTop:'15px'}} >
                 <div style={{display:'flex', flexDirection:'row'}}>
                     <h3 style={{marginLeft:'15px',flexGrow:1}}>
                         {searched?<span>Searched Question Results - <span style={{color:'blue'}}>{searchString}</span></span>
@@ -100,9 +111,10 @@ const QuestionListPage = () => {
                                 .map((question)=> <QuestionCard question={question}  key={question.question_id}/>)}
                 </div>
                 <div style={{padding:'20px 0px'}}>
-                         {questions.length>0 && !searched ?<Pagination onChange={(_,val)=>{setStart(val-1)}}  color='primary' count={start+5} size="large"/>:<></>}
+                         {questions.length>0 && !searched ?<Pagination defaultPage={start+1} onChange={(_,val)=>{setQuestions([]);setStart(val-1)}}  color='primary' count={start+5} size="large"/>:<></>}
                 </div>
-            </div>
+            </div>:
+            <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>}
         </>
     );
 }

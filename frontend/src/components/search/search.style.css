@@ -3,7 +3,7 @@
     top: 0px ;
     padding-top: 12px;
     padding-left: 100px;
-    width: 80% ;
+    max-width: 65% ;
     height: 60px ;
     z-index: 1200 !important;
 }
@@ -11,7 +11,7 @@
     box-shadow: rgba(0, 0, 0, 0.55) 0px 0px 6px !important;
     height: 40px;
 }
-@media only screen and (max-width: 993px) {
+@media only screen and (max-width: 900px) {
     .outer-box {  
         display: flex;
         justify-content: center;

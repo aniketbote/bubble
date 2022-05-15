@@ -10,6 +10,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import VoteComponent from '../../components/vote/vote.component';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../../state';
+import { Button } from 'react-bootstrap';
 
 const QuestionPage = ()=>{
     const {session} = useContext(AccountContext);
@@ -17,6 +21,13 @@ const QuestionPage = ()=>{
     const [data,setData] = useState({});
     const {question_id} =useParams();
     const navigate = useNavigate();
+
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const {setButtonGroupView} = bindActionCreators(actionCreators,dispatch);
+        setButtonGroupView('questions')
+    },[])
+
 
     useEffect(()=>{
         fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/get_question',{
@@ -28,12 +39,55 @@ const QuestionPage = ()=>{
             body: JSON.stringify({question_id:question_id})
             })
             .then(response => response.json())
-            .then(data => { console.log(data) ; setData(data)})
+            .then(data => { 
+                console.log(data);
+                if(data.status===400){
+                    navigate('/invalid')
+                };  
+                setData(data)})
+            .catch(err=>{console.log(err); navigate('/invalid')})
     },[question_id])
 
     const handelEdit = ()=>{
         navigate('/create_question',{state:data});
     }
+    const handleDelete = ()=>{
+        const item ={
+          user_id: user_id,
+          question_id: question_id,
+          parent_id: question_id,
+          parent:'question'
+        }
+        if(window.confirm('Are you sure you want to delete this question?')){
+            fetch('https://mlzxcs78h5.execute-api.us-east-1.amazonaws.com/v1/delete',{
+                method:'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin':'*'
+                  },
+                body: JSON.stringify(item)
+                })
+                .then(response => response.json())
+                .then(() => {navigate('/')})
+                .catch(err=>{console.log(err)})
+        }
+        
+     }
+     if(data.deleted){
+        return <div style={{padding:'15px'}}>
+        <h3>This content has deleted because one of the following reasons.</h3>
+        <ul>
+            <li> The content was deleted by the owner himself/herself.</li>
+            <li> One of our moderator find this content inappropriate.</li>
+            <li> Out system detected some explicit or inappropriate media inside the content.</li>
+        </ul>
+        <Button style={{fontSize:'small'}} 
+                variant='text' 
+                size='large'
+                onClick={navigate('/questions')}> get back to recent questions </Button>
+    </div>
+    }
+
 
     if(data.question_description===undefined)
         return <div style={{display:'flex',flexDirection:'row',flexGrow:1,justifyContent:'center',paddingTop:'20px'}}><CircularProgress /></div>
@@ -42,13 +96,13 @@ const QuestionPage = ()=>{
         <div className='content-column'>
             <div style={{display:'flex',flexDirection:'row',flexGrow:1}}>
                 <div className='left-column' style={{flexDirection:'column',flexGrow:1}}>
-                    {user_id!==data.user_id?
+                    {user_id===data.user_id?
                     <div style={{display:'flex',flexDirection:'row'}}>
                         <div style={{flexGrow:1}}/>
                             <IconButton onClick={handelEdit} title='Edit'>
                                 <EditIcon style={{color:'#003060'}} fontSize='large'/>
                             </IconButton>
-                            <IconButton title='Delete'>
+                            <IconButton onClick={handleDelete} title='Delete'>
                                 <DeleteIcon style={{color:'#E7625F'}} fontSize='large'/>
                             </IconButton>
                          </div>:null}

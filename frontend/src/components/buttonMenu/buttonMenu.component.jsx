@@ -13,8 +13,8 @@ import { actionCreators } from '../../state';
 export const ButtonMenu = () => {
   const view = useSelector(state=>state.buttonView);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const {setButtonGroupView} = bindActionCreators(actionCreators,dispatch);
+  const navigate = useNavigate();
 
   const buttons = [
     <ToggleButton onClick={()=>{ navigate('/')}}  value="home" className='gray-button' key="home">Home</ToggleButton>,
