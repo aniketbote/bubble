@@ -17,4 +17,8 @@ def lambda_handler(event, context):
     logger.debug(f"[USER][QUERY] {q}")
     response = table.get_item(Key=q)['Item']
     response.pop("math_vector")
+    if 'comment_ids' not in response.keys():
+        response['comment_ids'] = []
+    else:
+        response['comment_ids'] = list(response['comment_ids'])
     return response

@@ -23,21 +23,21 @@ import sys
 from boto3.dynamodb.types import TypeSerializer
 import six
 
-client = boto3.client('dynamodb', aws_access_key_id="AKIA2DHJUBNXY7BMXBOI",
-						  aws_secret_access_key="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", region_name= 'us-east-1')
+client = boto3.client('dynamodb', aws_access_key_id="********",
+						  aws_secret_access_key="********", region_name= 'us-east-1')
 
 dynamodb = boto3.resource(service_name='dynamodb',
-						  aws_access_key_id="AKIA2DHJUBNXY7BMXBOI",
-						  aws_secret_access_key="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",
+						  aws_access_key_id="*********",
+						  aws_secret_access_key="**********",
 						  region_name="us-east-1",
 						  endpoint_url="http://dynamodb.us-east-1.amazonaws.com")
 table1 = dynamodb.Table('questions-db')
 table2 = dynamodb.Table('user-activity-db')
 
-host = 'https://search-bubble-domain-rfgwnz5ocgakgdb44rflkimdbi.us-east-1.es.amazonaws.com'
+host = '***********'
 
-master_user = 'admin'
-master_password = 'Admin@12345'
+master_user = '********'
+master_password = '********'
 
 
 def findimagesrc(data):
@@ -90,16 +90,11 @@ def post_question(event, model):
 def imageSQSRequest(requestData, questionid, userid):
 	
 
-	sqs = boto3.client('sqs', aws_access_key_id="AKIA2DHJUBNXY7BMXBOI", 
-						aws_secret_access_key="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", region_name= 'us-east-1', endpoint_url="https://sqs.us-east-1.amazonaws.com/694127168367/Q1")
+	sqs = boto3.client('sqs', aws_access_key_id="***********", 
+						aws_secret_access_key="**********", region_name= 'us-east-1', endpoint_url="*********")
 	
-	# sqs = boto3.resource(service_name='sqs',
-	#                       aws_access_key_id="AKIA2DHJUBNXY7BMXBOI",
-	#                       aws_secret_access_key="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",
-	#                       region_name="us-east-1",
-	#                       endpoint_url="https://sqs.us-east-1.amazonaws.com/694127168367/Q1")
 
-	queue_url = "https://sqs.us-east-1.amazonaws.com/694127168367/Q1"
+	queue_url = "*********"
 	messageAttributes = {
 		"question_id": questionid ,
 		"image_urls": requestData ,
