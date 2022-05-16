@@ -7,7 +7,7 @@
 *************************
 [Bubble](http://bubble-nyu.s3-website-us-east-1.amazonaws.com)
 \
-You can create new account or feel free to use Id:demo@nyu.edu Password: Demo12345 to sign-in.
+You can create new account or feel free to use Id: demo@nyu.edu Password: Demo12345 to sign-in.
 \
 **Video Presentation**
 *************
