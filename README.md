@@ -5,7 +5,7 @@
 \
 **Project Link:**
 *************************
-[Bubble](http://ec2-3-239-217-225.compute-1.amazonaws.com:3000/)
+[Bubble](http://bubble-nyu.s3-website-us-east-1.amazonaws.com)
 
 \
 **Video Presentation**
