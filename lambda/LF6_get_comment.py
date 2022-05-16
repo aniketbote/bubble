@@ -12,11 +12,14 @@ def lambda_handler(event, context):
     # TODO implement
     logger.debug(f"[USER][EVENT] {event}")
     logger.debug(f"[USER][CONTEXT] {context}")
+    if len(event['comment_ids']) == 0:
+        return []
     response = client.batch_get_item(
         RequestItems={
-            'answers-db': {'Keys': [{'answer_id': id} for id in event['answer_ids']]}
+            'comments-db': {'Keys': [{'comment_id': id} for id in event['comment_ids']]}
         }
-    )['Responses']['answers-db']
+    )['Responses']['comments-db']
     logger.debug(f"[USER][RESPONSE] {response}")
+    
     
     return response
