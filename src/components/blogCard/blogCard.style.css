@@ -1,0 +1,53 @@
+.card{
+    padding: 10px 10px 10px 0px ;
+    margin:5px 10px;
+    display: flex !important;
+    flex-direction: row !important;
+}
+.col-1{
+    
+    display: flex;
+    flex-direction: column;
+    color: gray;
+    text-align: left;
+    min-width: 125px;
+    justify-content: center;
+}
+
+.col-2{
+    display: flex ;
+    flex-direction: column ;
+    flex-grow: 100 !important;
+    width: 50vw !important;
+}
+.col-3{
+    display: flex ;
+    flex-direction: row ;
+    justify-content: right;
+    padding-left: 20px;
+}
+.text{
+    text-align: right;
+}
+.header-link{
+    text-decoration: none;
+    color: black;
+}
+.vl {
+    border-left: 1px solid gray;
+    height: auto;
+    margin: 0px 10px;
+  }
+
+.blog-text{
+    overflow: hidden;
+    color: gray;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+.single-line{
+    display: flex;
+    flex-direction: row !important;
+}

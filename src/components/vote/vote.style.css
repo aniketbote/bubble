@@ -1,0 +1,9 @@
+.icon-display {
+    transform: scale(2) !important;
+ }
+
+ .vote-count{
+     display: flex;
+    font-size: 16px;
+    justify-content: center;
+ }

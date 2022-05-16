@@ -1,0 +1,11 @@
+.gray-button {
+    border: 1px solid #585b5e55 !important;
+    color: #585b5ed3 !important;
+    font-size: 13px !important;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 10px;
+    height: 35px !important;
+}
+
+.button-group{
+    width:90%
+}
