@@ -44,7 +44,7 @@ You can create new account or feel free to use Id: demo@nyu.edu Password: Demo12
 * AWS SQS
 * AWS Comprehend
 * AWS CloudWatch
-* DynamoDB
+* AWS DynamoDB
 
 \
 **Product Features:**
