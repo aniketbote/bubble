@@ -30,7 +30,7 @@ dynamodb = boto3.resource(service_name='dynamodb',
 						  aws_access_key_id="*********",
 						  aws_secret_access_key="**********",
 						  region_name="us-east-1",
-						  endpoint_url="http://dynamodb.us-east-1.amazonaws.com")
+						  endpoint_url="*******")
 table1 = dynamodb.Table('questions-db')
 table2 = dynamodb.Table('user-activity-db')
 
