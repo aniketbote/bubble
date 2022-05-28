@@ -78,7 +78,7 @@ def post_blog(event, model):
      "blog_title": event["blog_title"],
      "blog_content": event["blog_content"],
      "blog_short_description": removetag[:750],
-     "image_urls": findimagesrc(event["blog_content"]),
+     "image_urls": list(findimagesrc(event["blog_content"])),
      "math_vector": list(map(lambda x: Decimal(str(x)), \
             list(model([event['blog_title']])[0].numpy()))),
      "timestamp": str(datetime.now()).split('.')[0],
