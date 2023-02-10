@@ -3,9 +3,10 @@
 ### Online resource for NYU
 ------------------------------------------------
 \
-**Video demo:**
+*Video demo:*
 *************************
 https://clipchamp.com/watch/nbpgfYjEcQV
+\
 \
 **Video Presentation**
 *************
