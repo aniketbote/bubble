@@ -6,12 +6,9 @@
 *Video demo:*
 https://clipchamp.com/watch/nbpgfYjEcQV
 *************************
-
 \
-\
-**Video Presentation**
+*Video Presentation:*https://youtu.be/BJFATRNQbPo
 *************
-https://youtu.be/BJFATRNQbPo
 \
 \
 **Project Description:**
